@@ -24,7 +24,21 @@
     "postbuild": "rimraf {lib,es}/**/__tests__",
     "posttest": "npm run typecheck && npm run lint",
     "preversion": "npm test",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier",
+      "lint",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "printWidth": 100,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
   },
   "keywords": [
     "api",
@@ -41,13 +55,16 @@
   ],
   "dependencies": {
     "@types/node": "^8.0.0",
+    "soap": "~0.23.0",
     "tslib": "^1.6.0"
   },
   "devDependencies": {
     "@types/jest": "^20.0.0",
     "dts-bundle": "^0.7.2",
     "jest": "^20.0.0",
+    "lint-staged": "~7.0.0",
     "pascal-case": "^2.0.1",
+    "prettier": "~1.11.1",
     "rimraf": "^2.6.1",
     "rollup": "^0.47.4",
     "rollup-plugin-commonjs": "^8.1.0",

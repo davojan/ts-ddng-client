@@ -9,11 +9,13 @@
     "linebreak-style": [true, "LF"],
     "max-classes-per-file": [false],
     "member-access": [false],
+    "no-consecutive-blank-lines": [true, 2],
     "no-require-imports": true,
     "object-literal-sort-keys": false,
     "ordered-imports": [false],
     "prefer-const": true,
     "quotemark": [true, "single", "jsx-double"],
+    "semicolon": [true, "never"],
     "space-before-function-paren": [true, {
       "anonymous": "always",
       "asyncArrow": "always",
