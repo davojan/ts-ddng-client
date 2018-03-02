@@ -2,6 +2,7 @@ import {createClientAsync} from 'soap'
 
 import * as types from './soapTypes'
 import { AsyncDdngClient, AuthArgs } from './soapTypes'
+import { xml2json } from './xml2json'
 
 
 /**
@@ -18,6 +19,6 @@ export class SoapClient {
   }
 
   getBalance(params?: types.GetBalanceParams): Promise<types.GetBalanceResult> {
-    return this.client.then(client => client.getBalanceAsync({...this.authArgs, params}))
+    return this.client.then(client => client.getBalanceAsync({...this.authArgs, params})).then(xml2json)
   }
 }
