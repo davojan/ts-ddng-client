@@ -1,4 +1,4 @@
-import { SoapClient } from '..'
+import { SoapClient } from '../src'
 
 let client: SoapClient
 

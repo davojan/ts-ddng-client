@@ -14,4 +14,21 @@ export interface GetBalanceParams {
   is_with_duty?: boolean
 }
 
-export type GetBalanceResult = any
+export interface GetBalanceResult {
+  getBalanceReturn: GetBalanceResultItem[]
+}
+
+export interface GetBalanceResultItem {
+  sum: string
+  currency_id: string
+  place_id: string
+  date: string
+  is_for_duty: string
+  is_credit_card: string
+  description: string | null
+  place_name: string
+  currency_name: string
+  currency_default: string
+  parent_id: string
+  sort: string
+}
