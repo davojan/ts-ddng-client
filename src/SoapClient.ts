@@ -1,6 +1,7 @@
 import { soap } from 'strong-soap'
 import { promisify } from 'bluebird'
 
+import { GetRecordListSoapParams, GetRecordListSoapResult } from './messages/getRecordList'
 import { paramsToSoap } from './paramsToSoap'
 import * as types from './soapTypes'
 import { AsyncDdngClient, AuthArgs } from './soapTypes'
@@ -18,6 +19,7 @@ export class SoapClient {
     this.client = (createClientAsync as any)('https://www.drebedengi.ru/soap/dd.wsdl').then(
       client => {
         client.getBalanceAsync = promisify(client.getBalance)
+        client.getRecordListAsync = promisify(client.getRecordList)
         return client
       },
     )
@@ -29,6 +31,23 @@ export class SoapClient {
       client =>
         client
           .getBalanceAsync({ ...this.authArgs, params: paramsToSoap(params) })
+          .then(xml2json)
+          .catch(err => {
+            console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+            throw err
+          }),
+      // .then(res => {
+      //   console.debug(`Previous SOAP request ${(client as any).lastRequest}`)
+      //   return res
+      // })
+    )
+  }
+
+  getRecordList(params?: GetRecordListSoapParams): Promise<GetRecordListSoapResult> {
+    return this.client.then(
+      client =>
+        client
+          .getRecordListAsync({ ...this.authArgs, params: paramsToSoap(params) })
           .then(xml2json)
           .catch(err => {
             console.error(`Error during SOAP request ${(client as any).lastRequest}`)

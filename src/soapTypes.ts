@@ -1,5 +1,10 @@
+import { GetRecordListSoapParams } from './messages/getRecordList'
+
 export interface AsyncDdngClient {
   getBalanceAsync: (args: AuthArgs & { params?: GetBalanceParams }) => Promise<GetBalanceResult>
+  getRecordListAsync: (
+    args: AuthArgs & { params?: GetRecordListSoapParams },
+  ) => Promise<GetBalanceResult>
 }
 
 export interface AuthArgs {
