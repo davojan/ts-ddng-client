@@ -10,6 +10,7 @@
     "max-classes-per-file": [false],
     "member-access": [false],
     "no-consecutive-blank-lines": [true, 2],
+    "no-console": [true, "debug", "log", "time", "timeEnd", "trace"],
     "no-require-imports": true,
     "object-literal-sort-keys": false,
     "ordered-imports": [false],
@@ -23,6 +24,18 @@
       "method": "never",
       "named": "never"
     }],
+    "trailing-comma": [
+      true,
+      {
+        "singleline": "never",
+        "multiline": {
+          "objects": "always",
+          "arrays": "always",
+          "functions": "ignore",
+          "typeLiterals": "never"
+        }
+      }
+    ],
     "variable-name": [
       true,
       "ban-keywords",

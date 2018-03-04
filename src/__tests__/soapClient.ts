@@ -1,4 +1,4 @@
-import {SoapClient} from '..'
+import { SoapClient } from '..'
 
 let client: SoapClient
 
@@ -11,8 +11,8 @@ afterAll(() => {
 })
 
 test('GetBalance SOAP call', async () => {
-  const result = await client.getBalance()
-  // console.info(JSON.stringify(result, null, 2))
+  const result = await client.getBalance({ restDate: '2010-11-29', is_with_accum: true })
+  // console.debug(JSON.stringify(result, null, 2))
   expect(result).toBeDefined()
   expect(Array.isArray(result.getBalanceReturn)).toBeTruthy()
 })

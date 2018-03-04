@@ -1,8 +1,5 @@
-import {Client} from 'soap'
-
-
-export interface AsyncDdngClient extends Client {
-  getBalanceAsync: (args: AuthArgs & {params?: GetBalanceParams}) => Promise<GetBalanceResult>
+export interface AsyncDdngClient {
+  getBalanceAsync: (args: AuthArgs & { params?: GetBalanceParams }) => Promise<GetBalanceResult>
 }
 
 export interface AuthArgs {
