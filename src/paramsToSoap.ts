@@ -3,7 +3,7 @@ import { Dictionary } from './types'
 /**
  * Converts plain-object params to the format that will be correctly represented in SOAP request
  */
-export function paramsToSoap(params: Dictionary<any> | undefined) {
+export function mapToSoap(params: Dictionary<any> | undefined) {
   if (!params || Object.keys(params).length === 0) {
     return params
   }
