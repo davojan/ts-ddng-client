@@ -57,18 +57,18 @@ try {
 	// 	)
 	// );
 
-	echo "\nBalance:\n";
-	print_r(
-		$client->getBalance(
-			'demo_api',
-			'demo@example.com',
-			'demo',
-			array(
-				'restDate'    => '2010-11-29',
-			)
-		)
-	);
-	echo $client->__getLastRequest();
+	// echo "\nBalance:\n";
+	// print_r(
+	// 	$client->getBalance(
+	// 		'demo_api',
+	// 		'demo@example.com',
+	// 		'demo',
+	// 		array(
+	// 			'restDate'    => '2010-11-29',
+	// 		)
+	// 	)
+	// );
+	// echo $client->__getLastRequest();
 
 	/**
 	 * Write functions
@@ -178,89 +178,89 @@ try {
 //	);
 //	print_r($client->setTagList('demo_api', 'demo@example.com', 'demo', $tagList));
 
-//	echo "\nSet record list:\n";
-//	$recordList = array(
-//		array(
-//			'server_id'         => 53131,
-//			'place_id'          => 40034,
-//			'budget_object_id'  => 40024,
-//			'sum'               => 14901,
-//			'operation_date'    => '2010-12-14 12:58:00',
-//			'comment'           => 'Объект "A" №10',
-//			'currency_id'       => 20,
-//			'is_duty'           => false,
-//			'operation_type'    => 2,
-//		),
-//		array(
-//			'client_id'         => 11111,
-//			'place_id'          => 40034,
-//			'budget_object_id'  => 40012,
-//			'sum'               => 20000,
-//			'operation_date'    => '2010-12-14 13:58:00',
-//			'comment'           => 'Объект "A" №11',
-//			'currency_id'       => 17,
-//			'is_duty'           => false,
-//			'operation_type'    => 3,
-//		),
-//		array(
-//			'client_id'         => 22222,
-//			'place_id'          => 40034,
-//			'budget_object_id'  => 40025,
-//			'sum'               => 35000,
-//			'operation_date'    => '2010-12-14 14:58:00',
-//			'comment'           => 'Объект "A" №12',
-//			'currency_id'       => 17,
-//			'is_duty'           => true,
-//			'operation_type'    => 3,
-//		),
-//		array(
-//			'client_id'         => 33333,
-//			'place_id'          => 40034,
-//			'budget_object_id'  => 41439,
-//			'sum'               => 1234,
-//			'operation_date'    => '2010-12-14 14:58:00',
-//			'comment'           => 'Объект "A" №13',
-//			'currency_id'       => 17,
-//			'is_duty'           => false,
-//			'operation_type'    => 4,
-//		),
-//		array(
-//			'client_id'         => 44444,
-//			'client_move_id'    => 33333,
-//			'place_id'          => 41439,
-//			'budget_object_id'  => 40034,
-//			'sum'               => -1234,
-//			'operation_date'    => '2010-12-14 14:58:00',
-//			'comment'           => 'Объект "A" №13',
-//			'currency_id'       => 17,
-//			'is_duty'           => false,
-//			'operation_type'    => 4,
-//		),
-//		array(
-//			'client_id'         => 55555,
-//			'place_id'          => 40034,
-//			'budget_object_id'  => 40034,
-//			'sum'               => 3000,
-//			'operation_date'    => '2010-12-15 14:58:00',
-//			'comment'           => 'Объект "A" №14',
-//			'currency_id'       => 18,
-//			'is_duty'           => false,
-//			'operation_type'    => 5,
-//		),
-//		array(
-//			'client_id'         => 66666,
-//			'client_change_id'  => 55555,
-//			'place_id'          => 40034,
-//			'budget_object_id'  => 40034,
-//			'sum'               => -100000,
-//			'operation_date'    => '2010-12-15 14:58:00',
-//			'comment'           => 'Объект "A" №14',
-//			'currency_id'       => 17,
-//			'is_duty'           => false,
-//			'operation_type'    => 5,
-//		),
-//	);
-//	print_r($client->setRecordList('demo_api', 'demo@example.com', 'demo', $recordList));
+	echo "\nSet record list:\n";
+	$recordList = array(
+		array(
+			'server_id'         => 53131,
+			'place_id'          => 40034,
+			'budget_object_id'  => 40024,
+			'sum'               => 14901,
+			'operation_date'    => '2010-12-14 12:58:00',
+			'comment'           => 'Объект "A" №10',
+			'currency_id'       => 20,
+			'is_duty'           => false,
+			'operation_type'    => 2,
+		),
+		array(
+			'client_id'         => 11111,
+			'place_id'          => 40034,
+			'budget_object_id'  => 40012,
+			'sum'               => 20000,
+			'operation_date'    => '2010-12-14 13:58:00',
+			'comment'           => 'Объект "A" №11',
+			'currency_id'       => 17,
+			'is_duty'           => false,
+			'operation_type'    => 3,
+		),
+		array(
+			'client_id'         => 22222,
+			'place_id'          => 40034,
+			'budget_object_id'  => 40025,
+			'sum'               => 35000,
+			'operation_date'    => '2010-12-14 14:58:00',
+			'comment'           => 'Объект "A" №12',
+			'currency_id'       => 17,
+			'is_duty'           => true,
+			'operation_type'    => 3,
+		),
+		array(
+			'client_id'         => 33333,
+			'place_id'          => 40034,
+			'budget_object_id'  => 41439,
+			'sum'               => 1234,
+			'operation_date'    => '2010-12-14 14:58:00',
+			'comment'           => 'Объект "A" №13',
+			'currency_id'       => 17,
+			'is_duty'           => false,
+			'operation_type'    => 4,
+		),
+		array(
+			'client_id'         => 44444,
+			'client_move_id'    => 33333,
+			'place_id'          => 41439,
+			'budget_object_id'  => 40034,
+			'sum'               => -1234,
+			'operation_date'    => '2010-12-14 14:58:00',
+			'comment'           => 'Объект "A" №13',
+			'currency_id'       => 17,
+			'is_duty'           => false,
+			'operation_type'    => 4,
+		),
+		array(
+			'client_id'         => 55555,
+			'place_id'          => 40034,
+			'budget_object_id'  => 40034,
+			'sum'               => 3000,
+			'operation_date'    => '2010-12-15 14:58:00',
+			'comment'           => 'Объект "A" №14',
+			'currency_id'       => 18,
+			'is_duty'           => false,
+			'operation_type'    => 5,
+		),
+		array(
+			'client_id'         => 66666,
+			'client_change_id'  => 55555,
+			'place_id'          => 40034,
+			'budget_object_id'  => 40034,
+			'sum'               => -100000,
+			'operation_date'    => '2010-12-15 14:58:00',
+			'comment'           => 'Объект "A" №14',
+			'currency_id'       => 17,
+			'is_duty'           => false,
+			'operation_type'    => 5,
+		),
+	);
+	print_r($client->setRecordList('demo_api', 'demo@example.com', 'demo', $recordList));
 
 //	echo "\nDelete object:\n";
 //	print_r($client->deleteObject('demo_api', 'demo@example.com', 'demo', '2278416', 'object'));
@@ -272,9 +272,11 @@ try {
 //	echo "\nCurrent revision:\n";
 //	print_r($client->getCurrentRevision('demo_api', 'demo@example.com', 'demo'));
 
+	echo $client->__getLastRequest();
 }
 catch (SoapFault $e) {
 	echo $client->__getLastResponse();
 	print_r($e);
 }
+echo $client->__getLastRequest();
 ?>

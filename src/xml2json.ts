@@ -35,13 +35,11 @@ export function xml2json(value: any): any {
 const attributesKey = '$attributes'
 
 function xsiType(value: any): string {
-  return value[attributesKey] && value[attributesKey].$xsiType
-    ? value[attributesKey].$xsiType.type
-    : 'unknown'
+  return value[attributesKey] && value[attributesKey].$xsiType ? value[attributesKey].$xsiType.type : 'unknown'
 }
 
 function xmlArray2json(value: any[]): any[] {
-  return Array.isArray(value) ? value.map(xml2json) : []
+  return Array.isArray(value) ? value.map(xml2json) : [xml2json(value)]
 }
 
 function xmlMap2json(value: any[]): Dictionary<any> {

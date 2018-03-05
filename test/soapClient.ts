@@ -18,7 +18,7 @@ test.skip('GetBalance SOAP call', async () => {
   expect(Array.isArray(result.getBalanceReturn)).toBeTruthy()
 })
 
-test('GetRecordList SOAP call', async () => {
+test.skip('GetRecordList SOAP call', async () => {
   const result = await client.getRecordList({
     is_report: true,
     is_show_duty: true,
@@ -26,6 +26,35 @@ test('GetRecordList SOAP call', async () => {
     r_what: RecordType.Income,
     r_period: PeriodType.Today,
   })
+  // console.debug(JSON.stringify(result, null, 2))
+  expect(result).toBeDefined()
+})
+
+test('SetRecordList SOAP call', async () => {
+  const result = await client.setRecordList([
+    {
+      client_id: 11111,
+      place_id: 40034,
+      budget_object_id: 40012,
+      sum: 20000,
+      operation_date: '2010-12-14 13:58:00',
+      comment: 'xxx',
+      currency_id: 17,
+      is_duty: false,
+      operation_type: 3,
+    },
+    {
+      client_id: 222,
+      place_id: 40034,
+      budget_object_id: 40012,
+      sum: 20000,
+      operation_date: '2010-12-14 13:58:00',
+      comment: 'xxx 1',
+      currency_id: 17,
+      is_duty: false,
+      operation_type: 3,
+    },
+  ])
   // console.debug(JSON.stringify(result, null, 2))
   expect(result).toBeDefined()
 })

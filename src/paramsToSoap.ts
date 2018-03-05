@@ -1,10 +1,5 @@
 import { Dictionary } from './types'
 
-interface ParamItem {
-  key: string
-  value: any
-}
-
 /**
  * Converts plain-object params to the format that will be correctly represented in SOAP request
  */
@@ -13,14 +8,46 @@ export function paramsToSoap(params: Dictionary<any> | undefined) {
     return params
   }
 
-  const result = {
+  return {
     $attributes: { $xsiType: '{http://xml.apache.org/xml-soap}Map' },
-    item: [] as ParamItem[],
+    item: mapToParamItems(params),
+  }
+}
+
+/**
+ * Converts list of plain objects into format that will be correctly represented in SOAP request
+ */
+export function mapListToSoap(list: Array<Dictionary<any>> | undefined): any {
+  if (!list || list.length === 0) {
+    return list
   }
 
-  for (const key in params) {
-    if (params.hasOwnProperty(key)) {
-      result.item.push({ key, value: withXsdType(params[key]) })
+  const result = {
+    $attributes: { $xsiType: '{http://schemas.xmlsoap.org/soap/encoding/}Array' },
+    item: [] as any[],
+  }
+
+  for (const item of list) {
+    result.item.push({
+      $attributes: { $xsiType: '{http://xml.apache.org/xml-soap}Map' },
+      item: mapToParamItems(item),
+    })
+  }
+
+  return result
+}
+
+interface ParamItem {
+  key: string
+  value: any
+}
+
+function mapToParamItems(map: Dictionary<any>): ParamItem[] {
+  const result: ParamItem[] = []
+
+  for (const key in map) {
+    if (map.hasOwnProperty(key)) {
+      result.push({ key, value: withXsdType(map[key]) })
     }
   }
 

@@ -42,8 +42,9 @@ export enum RecordType {
   Expence,
   Move,
   Exchange,
-  All,
 }
+
+export type RecordTypeAll = 6
 
 export enum GrouppingType {
   NoGroupping = 1,
@@ -73,7 +74,7 @@ export interface GetRecordListSoapParams {
   relative_date?: string
 
   r_how?: GrouppingType
-  r_what?: RecordType
+  r_what?: RecordType | RecordTypeAll
   is_show_duty?: boolean
   r_who?: number
 
