@@ -1,5 +1,17 @@
 import { SoapClient } from '.'
 import * as apiTypes from './apiTypes'
+import {
+  CreateExpenceParams,
+  createExpenceParamsToSoap,
+  createRecordClientId1,
+  CreateIncomeParams,
+  createIncomeParamsToSoap,
+  createRecordClientId2,
+  createMoveParamsToSoap,
+  CreateMoveParams,
+  CreateExchangeParams,
+  createExchangeParamsToSoap,
+} from './messages/setRecordList'
 
 /**
  * High-level api client for drebedengi.ru service
@@ -35,6 +47,84 @@ export class ApiClient {
           sortPosition: +item.sort,
         })),
       )
+  }
+
+  /**
+   * Creates a single income record
+   * @returns created record server ID
+   */
+  createIncome(params: CreateIncomeParams): Promise<number> {
+    return this.soapClient.setRecordList([createIncomeParamsToSoap(params)]).then(({ setRecordListReturn: result }) => {
+      if (
+        result.length === 1 &&
+        result[0].client_id === String(createRecordClientId1) &&
+        result[0].status === 'inserted'
+      ) {
+        return +result[0].server_id
+      } else {
+        throw new Error(`Unexpected response during create income record: ${JSON.stringify(result)}`)
+      }
+    })
+  }
+
+  /**
+   * Creates a single expence record
+   * @returns created record server ID
+   */
+  createExpence(params: CreateExpenceParams): Promise<number> {
+    return this.soapClient
+      .setRecordList([createExpenceParamsToSoap(params)])
+      .then(({ setRecordListReturn: result }) => {
+        if (
+          result.length === 1 &&
+          result[0].client_id === String(createRecordClientId1) &&
+          result[0].status === 'inserted'
+        ) {
+          return +result[0].server_id
+        } else {
+          throw new Error(`Unexpected response during create expence record: ${JSON.stringify(result)}`)
+        }
+      })
+  }
+
+  /**
+   * Creates a single move operation (which represented in 2 records in drebedengi service)
+   * @returns created records server IDs
+   */
+  createMove(params: CreateMoveParams): Promise<number[]> {
+    return this.soapClient.setRecordList(createMoveParamsToSoap(params)).then(({ setRecordListReturn: result }) => {
+      if (
+        result.filter(
+          x =>
+            (x.client_id === String(createRecordClientId1) || x.client_id === String(createRecordClientId2)) &&
+            x.status === 'inserted',
+        ).length >= 2
+      ) {
+        return result.map(x => +x.server_id)
+      } else {
+        throw new Error(`Unexpected response during creating move operation: ${JSON.stringify(result)}`)
+      }
+    })
+  }
+
+  /**
+   * Creates a single Exchange operation (which represented in 2 records in drebedengi service)
+   * @returns created records server IDs
+   */
+  createExchange(params: CreateExchangeParams): Promise<[number, number]> {
+    return this.soapClient.setRecordList(createExchangeParamsToSoap(params)).then(({ setRecordListReturn: result }) => {
+      if (
+        result.length === 2 &&
+        result[0].client_id === String(createRecordClientId1) &&
+        result[0].status === 'inserted' &&
+        result[1].client_id === String(createRecordClientId2) &&
+        result[1].status === 'inserted'
+      ) {
+        return [+result[0].server_id, +result[1].server_id] as [number, number]
+      } else {
+        throw new Error(`Unexpected response during creating Exchange operation: ${JSON.stringify(result)}`)
+      }
+    })
   }
 }
 

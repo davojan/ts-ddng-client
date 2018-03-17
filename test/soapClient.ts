@@ -23,14 +23,14 @@ test.skip('GetRecordList SOAP call', async () => {
     is_report: true,
     is_show_duty: true,
     r_how: GrouppingType.NoGroupping,
-    r_what: RecordType.Income,
-    r_period: PeriodType.Today,
+    r_what: RecordType.Exchange,
+    r_period: PeriodType.LastYear,
   })
   // console.debug(JSON.stringify(result, null, 2))
   expect(result).toBeDefined()
 })
 
-test('SetRecordList SOAP call', async () => {
+test.skip('SetRecordList SOAP call', async () => {
   const result = await client.setRecordList([
     {
       client_id: 11111,

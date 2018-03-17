@@ -16,8 +16,8 @@
     "build:umd": "npm run build:es && rollup --config && dts-bundle --name dist/bundle --main es --outputAsModuleFolder",
     "clean": "rimraf dist es lib coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "tslint --project tsconfig.json --format stylish",
-    "lint:fix": "tslint --project tsconfig.json --format stylish --fix",
+    "lint": "tslint --project tsconfig.tslint.json --format stylish",
+    "lint:fix": "tslint --project tsconfig.tslint.json --format stylish --fix",
     "test": "jest --env=jsdom --coverage",
     "test:watch": "jest --env=jsdom --watch --updateSnapshot",
     "prepublishOnly": "npm run build",
@@ -55,7 +55,7 @@
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "prettier --write",
-      "tslint --project tsconfig.json --format stylish --fix",
+      "tslint --project tsconfig.tslint.json --format stylish --fix",
       "git add"
     ]
   },
