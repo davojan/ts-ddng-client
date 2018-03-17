@@ -19,7 +19,7 @@ export function xml2json(value: any): any {
       case 'Map':
         return xmlMap2json(value.item)
       case 'unknown':
-        const result = {}
+        const result: Dictionary<any> = {}
         for (const key in value) {
           if (value.hasOwnProperty(key)) {
             result[key] = xml2json(value[key])

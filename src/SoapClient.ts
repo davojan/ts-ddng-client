@@ -1,4 +1,4 @@
-import { soap } from 'strong-soap'
+const { soap } = require('strong-soap') // tslint:disable-line
 import { promisify } from 'bluebird'
 
 import { GetRecordListSoapParams, GetRecordListSoapResult } from './messages/getRecordList'
@@ -17,7 +17,7 @@ export class SoapClient {
 
   constructor(apiId: string, login: string, pass: string) {
     const createClientAsync = promisify(soap.createClient)
-    this.client = (createClientAsync as any)('https://www.drebedengi.ru/soap/dd.wsdl').then(client => {
+    this.client = (createClientAsync as any)('https://www.drebedengi.ru/soap/dd.wsdl').then((client: any) => {
       client.getBalanceAsync = promisify(client.getBalance)
       client.getRecordListAsync = promisify(client.getRecordList)
       client.setRecordListAsync = promisify(client.setRecordList)

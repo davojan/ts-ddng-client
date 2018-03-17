@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    // "rootDir": "src",
+    "rootDir": "src",
     "outDir": ".code",
     "newLine": "LF",
     "lib": ["dom", "es2017"],
@@ -13,11 +13,13 @@
     "sourceMap": true,
     "inlineSources": true,
     "noUnusedLocals": true,
+    "noImplicitAny": true,
     "strictNullChecks": true
   },
   "exclude": [
     "node_modules",
     "dist",
+    "test",
     "es",
     "lib"
   ]
