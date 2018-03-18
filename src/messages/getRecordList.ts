@@ -1,3 +1,5 @@
+import { toBool } from '../utils'
+
 /**
  * Retrievs record list (array of arrays) or report table by parameters;
  * [params] => array of following parameters:
@@ -44,6 +46,7 @@ export enum RecordType {
   Exchange,
 }
 
+export const RecordTypeAll = 6
 export type RecordTypeAll = 6
 
 export enum GrouppingType {
@@ -91,6 +94,58 @@ export interface GetRecordListSoapParams {
   r_category?: number[]
 }
 
+export interface GetRecordListParams {
+  periodFrom?: string
+  periodTo?: string
+  periodType?: PeriodType
+  relativeDate?: string
+
+  recordType?: RecordType | RecordTypeAll
+  includeDepts?: boolean
+  creatorUserId?: number
+
+  displayCurrencyId?: number
+
+  placeFilterType?: FilterType
+  placeIds?: number[]
+
+  tagFilterType?: FilterType
+  tagIds?: number[]
+
+  categoryFilterType?: FilterType
+  categoryIds?: number[]
+}
+
+export const getRecordListParamsToSoap = (params: GetRecordListParams): GetRecordListSoapParams => ({
+  // seems that this should always be true, false gives always empty results
+  is_report: true,
+
+  r_period: params.periodFrom || params.periodTo ? PeriodType.Custom : params.periodType || PeriodType.Last20Records,
+  period_from: params.periodType === PeriodType.Custom ? params.periodFrom : undefined,
+  period_to: params.periodType === PeriodType.Custom ? params.periodFrom : undefined,
+  relative_date: params.periodType !== PeriodType.Custom ? params.relativeDate : undefined,
+
+  r_how: GrouppingType.NoGroupping,
+  r_what: params.recordType || RecordTypeAll,
+  is_show_duty: params.includeDepts,
+  r_who: params.creatorUserId,
+
+  r_currency: params.displayCurrencyId,
+  r_middle: undefined, // important
+
+  r_is_place:
+    params.placeFilterType || (params.placeIds && params.placeIds.length ? FilterType.OnlySelected : FilterType.All),
+  r_place: params.placeIds,
+
+  r_is_tag: params.tagFilterType || (params.tagIds && params.tagIds.length ? FilterType.OnlySelected : FilterType.All),
+  r_tag: params.tagIds,
+
+  r_is_category:
+    params.categoryFilterType ||
+    (params.categoryIds && params.categoryIds.length ? FilterType.OnlySelected : FilterType.All),
+  r_category: params.categoryIds,
+})
+
 export interface GetRecordListSoapResult {
   getRecordListReturn: GetRecordListSoapResultItem[]
 }
@@ -113,9 +168,11 @@ export interface GetRecordListSoapResultItem {
   oper_timestamp: string
 }
 
+export type GetRecordListResult = GetRecordListResultItem[]
+
 export interface GetRecordListResultItem {
+  id: number
   placeId: number
-  budgetAccountId: number
   budgetObjectId: number
   budgetFamilyId: number
   categoryName: string // or account name
@@ -128,4 +185,24 @@ export interface GetRecordListResultItem {
   groupId: number | null
   operationType: RecordType
   timestamp: number
+  linkedRecordId?: number
 }
+
+export const recordListFromSoap = (soap: GetRecordListSoapResult): GetRecordListResult =>
+  soap.getRecordListReturn.map(r => ({
+    id: +r.id,
+    placeId: +r.budget_account_id,
+    budgetObjectId: +r.budget_object_id,
+    budgetFamilyId: +r.budget_family_id,
+    categoryName: r.name,
+    sum: +r.difference,
+    userId: +r.user_nuid,
+    isDept: toBool(r.is_duty),
+    dateTime: r.operation_date,
+    comment: r.comment || '',
+    currencyId: +r.currency_id,
+    groupId: r.group_id == null ? r.group_id : +r.group_id,
+    operationType: +r.operation_type,
+    timestamp: +r.oper_timestamp,
+    linkedRecordId: r.id2 ? +r.id2 : undefined,
+  }))

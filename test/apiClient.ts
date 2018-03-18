@@ -1,4 +1,5 @@
 import { ApiClient } from '../src'
+import { PeriodType, RecordType } from '../src/messages/getRecordList'
 
 let client: ApiClient
 
@@ -20,7 +21,17 @@ test.skip('GetBalance API call', async () => {
   expect(Array.isArray(result)).toBeTruthy()
 })
 
-test('CreateIncome API call', async () => {
+test('GetRecordList API call', async () => {
+  const result = await client.getRecordList({
+    includeDepts: true,
+    recordType: RecordType.Move,
+    periodType: PeriodType.LastMonth,
+  })
+  // console.debug(JSON.stringify(result, null, 2))
+  expect(Array.isArray(result)).toBeTruthy()
+})
+
+test.skip('CreateIncome API call', async () => {
   const result = await client.createIncome({
     placeId: 40034,
     sourceId: 40036,
@@ -32,7 +43,7 @@ test('CreateIncome API call', async () => {
   expect(result).toBeGreaterThan(1)
 })
 
-test('CreateExpence API call', async () => {
+test.skip('CreateExpence API call', async () => {
   const result = await client.createExpence({
     placeId: 40034,
     categoryId: 40010,
@@ -44,7 +55,7 @@ test('CreateExpence API call', async () => {
   expect(result).toBeGreaterThan(1)
 })
 
-test('CreateMove API call', async () => {
+test.skip('CreateMove API call', async () => {
   const result = await client.createMove({
     fromPlaceId: 41439,
     placeId: 40034,
@@ -56,7 +67,7 @@ test('CreateMove API call', async () => {
   expect(result.length).toBeGreaterThanOrEqual(2)
 })
 
-test('CreateExchange API call', async () => {
+test.skip('CreateExchange API call', async () => {
   const result = await client.createExchange({
     placeId: 40040,
     fromSum: 100,

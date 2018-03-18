@@ -1,12 +1,13 @@
-const { soap } = require('strong-soap') // tslint:disable-line
 import { promisify } from 'bluebird'
 
+import { GetBalanceSoapParams, GetBalanceSoapResult } from './messages/getBalance'
 import { GetRecordListSoapParams, GetRecordListSoapResult } from './messages/getRecordList'
 import { SetRecordListSoapList, SetRecordListSoapResult } from './messages/setRecordList'
-import { mapToSoap, mapListToSoap } from './paramsToSoap'
-import * as types from './soapTypes'
+import { mapListToSoap, mapToSoap } from './paramsToSoap'
 import { AsyncDdngClient, AuthArgs } from './soapTypes'
 import { xml2json } from './xml2json'
+
+const { soap } = require('strong-soap') // tslint:disable-line
 
 /**
  * Low-level SOAP-client for drebedengi.ru service
@@ -26,20 +27,15 @@ export class SoapClient {
     this.authArgs = { apiId, login, pass }
   }
 
-  getBalance(params?: types.GetBalanceParams): Promise<types.GetBalanceResult> {
-    return this.client.then(
-      client =>
-        client
-          .getBalanceAsync({ ...this.authArgs, params: mapToSoap(params) })
-          .then(xml2json)
-          .catch(err => {
-            console.error(`Error during SOAP request ${(client as any).lastRequest}`)
-            throw err
-          }),
-      // .then(res => {
-      //   console.debug(`Previous SOAP request ${(client as any).lastRequest}`)
-      //   return res
-      // })
+  getBalance(params?: GetBalanceSoapParams): Promise<GetBalanceSoapResult> {
+    return this.client.then(client =>
+      client
+        .getBalanceAsync({ ...this.authArgs, params: mapToSoap(params) })
+        .then(xml2json)
+        .catch(err => {
+          console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+          throw err
+        }),
     )
   }
 
@@ -61,19 +57,14 @@ export class SoapClient {
   }
 
   setRecordList(list?: SetRecordListSoapList): Promise<SetRecordListSoapResult> {
-    return this.client.then(
-      client =>
-        client
-          .setRecordListAsync({ ...this.authArgs, list: mapListToSoap(list) })
-          .then(xml2json)
-          .catch(err => {
-            console.error(`Error during SOAP request ${(client as any).lastRequest}`)
-            throw err
-          }),
-      // .then(res => {
-      //   console.debug(`Previous SOAP request ${(client as any).lastRequest}`)
-      //   return res
-      // })
+    return this.client.then(client =>
+      client
+        .setRecordListAsync({ ...this.authArgs, list: mapListToSoap(list) })
+        .then(xml2json)
+        .catch(err => {
+          console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+          throw err
+        }),
     )
   }
 }

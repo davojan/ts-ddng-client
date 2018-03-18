@@ -46,7 +46,7 @@ function mapToParamItems(map: Dictionary<any>): ParamItem[] {
   const result: ParamItem[] = []
 
   for (const key in map) {
-    if (map.hasOwnProperty(key)) {
+    if (map.hasOwnProperty(key) && map[key] !== undefined) {
       result.push({ key, value: withXsdType(map[key]) })
     }
   }

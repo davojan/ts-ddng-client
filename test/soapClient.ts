@@ -1,5 +1,5 @@
 import { SoapClient } from '../src'
-import { GrouppingType, RecordType, PeriodType } from '../src/messages/getRecordList'
+import { GrouppingType, PeriodType, RecordType } from '../src/messages/getRecordList'
 
 let client: SoapClient
 

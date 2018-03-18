@@ -1,0 +1,16 @@
+{
+  "typescriptHero.imports.insertSemicolons": false,
+  "typescriptHero.imports.multiLineWrapThreshold": 120,
+  "typescriptHero.index.workspaceIgnorePatterns": [
+    "**/lib/**/*",
+    "**/es/**/*",
+    "**/dist/**/*"
+  ],
+  "typescriptHero.imports.organizeOnSave": true,
+  "typescriptHero.imports.grouping": [
+    "Plains",
+    "Modules",
+    "Remaining",
+    "Workspace"
+  ]
+}

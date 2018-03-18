@@ -1,17 +1,24 @@
 import { SoapClient } from '.'
-import * as apiTypes from './apiTypes'
+import { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
 import {
-  CreateExpenceParams,
-  createExpenceParamsToSoap,
-  createRecordClientId1,
-  CreateIncomeParams,
-  createIncomeParamsToSoap,
-  createRecordClientId2,
-  createMoveParamsToSoap,
-  CreateMoveParams,
+  GetRecordListParams,
+  getRecordListParamsToSoap,
+  GetRecordListResult,
+  recordListFromSoap,
+} from './messages/getRecordList'
+import {
   CreateExchangeParams,
   createExchangeParamsToSoap,
+  CreateExpenceParams,
+  createExpenceParamsToSoap,
+  CreateIncomeParams,
+  createIncomeParamsToSoap,
+  CreateMoveParams,
+  createMoveParamsToSoap,
+  createRecordClientId1,
+  createRecordClientId2,
 } from './messages/setRecordList'
+import { toBool } from './utils'
 
 /**
  * High-level api client for drebedengi.ru service
@@ -24,7 +31,7 @@ export class ApiClient {
     this.soapClient = new SoapClient(apiId, login, pass)
   }
 
-  getBalance(params: apiTypes.GetBalanceParams): Promise<apiTypes.GetBalanceResult> {
+  getBalance(params: GetBalanceParams): Promise<GetBalanceResult> {
     return this.soapClient
       .getBalance({
         restDate: params.atDate,
@@ -47,6 +54,16 @@ export class ApiClient {
           sortPosition: +item.sort,
         })),
       )
+  }
+
+  /**
+   * Request plain records list filtered by the given params
+   * Note: every move or exchange is represented as two records, not one.
+   * To get higher-level operations see getOperations
+   * @param params
+   */
+  getRecordList(params: GetRecordListParams): Promise<GetRecordListResult> {
+    return this.soapClient.getRecordList(getRecordListParamsToSoap(params)).then(recordListFromSoap)
   }
 
   /**
@@ -126,10 +143,4 @@ export class ApiClient {
       }
     })
   }
-}
-
-function toBool(value: any): boolean {
-  return value === 't' || value === 'true' || value === 'yes'
-    ? true
-    : value === 'f' || value === 'false' || value === 'no' ? false : Boolean(value)
 }

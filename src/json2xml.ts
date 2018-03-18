@@ -24,7 +24,7 @@ function params2xml(value: any): string {
   if (typeof value === 'object') {
     const result: string[] = []
     for (const key in value) {
-      if (value.hasOwnProperty(key)) {
+      if (value.hasOwnProperty(key) && value[key] !== undefined) {
         result.push(xmlNode('item', xmlNode('key', key) + xmlNode('value', value[key])))
       }
     }

@@ -1,3 +1,28 @@
+export interface GetBalanceSoapParams {
+  restDate?: string
+  is_with_accum?: boolean
+  is_with_duty?: boolean
+}
+
+export interface GetBalanceSoapResult {
+  getBalanceReturn: GetBalanceSoapResultItem[]
+}
+
+export interface GetBalanceSoapResultItem {
+  sum: string
+  currency_id: string
+  place_id: string
+  date: string
+  is_for_duty: string
+  is_credit_card: string
+  description: string | null
+  place_name: string
+  currency_name: string
+  currency_default: string
+  parent_id: string
+  sort: string
+}
+
 export interface GetBalanceParams {
   // date at which point the balances should be calculated
   atDate?: string
