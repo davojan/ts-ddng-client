@@ -1,4 +1,5 @@
 import { ApiClient } from '../src'
+import { isExchangeOperation } from '../src/FinanceOperation'
 import { PeriodType, RecordType } from '../src/messages/getRecordList'
 
 let client: ApiClient
@@ -24,11 +25,27 @@ test.skip('GetBalance API call', async () => {
 test('GetRecordList API call', async () => {
   const result = await client.getRecordList({
     includeDepts: true,
-    recordType: RecordType.Move,
-    periodType: PeriodType.LastMonth,
+    recordType: RecordType.Exchange,
+    periodType: PeriodType.LastYear,
   })
   // console.debug(JSON.stringify(result, null, 2))
   expect(Array.isArray(result)).toBeTruthy()
+})
+
+test('GetOperations API call', async () => {
+  const result = await client.getOperations({
+    includeDepts: true,
+    recordType: RecordType.Exchange,
+    periodType: PeriodType.LastYear,
+  })
+  // console.debug(JSON.stringify(result, null, 2))
+  expect(Array.isArray(result)).toBeTruthy()
+  for (const x of result) {
+    expect(isExchangeOperation(x)).toBeTruthy()
+    if (isExchangeOperation(x)) {
+      expect(x.fromSum).toBeLessThan(0)
+    }
+  }
 })
 
 test.skip('CreateIncome API call', async () => {

@@ -1,3 +1,9 @@
+import {
+  ExchangeSpecificFields,
+  ExpenceSpecificFields,
+  IncomeSpecificFields,
+  MoveSpecificFields,
+} from '../FinanceOperation'
 import { RecordType } from './getRecordList'
 
 /**
@@ -59,9 +65,7 @@ export interface SetRecordListSoapResultItem {
 
 // createIncome
 
-export interface CreateIncomeParams extends CreateRecordParams {
-  sourceId: number
-}
+export interface CreateIncomeParams extends CreateRecordParams, IncomeSpecificFields {}
 
 export const createIncomeParamsToSoap = (params: CreateIncomeParams): SetRecordListSoapListItem => ({
   ...createRecordParamsToSoap(params),
@@ -72,9 +76,7 @@ export const createIncomeParamsToSoap = (params: CreateIncomeParams): SetRecordL
 
 // createExpence
 
-export interface CreateExpenceParams extends CreateRecordParams {
-  categoryId: number
-}
+export interface CreateExpenceParams extends CreateRecordParams, ExpenceSpecificFields {}
 
 export const createExpenceParamsToSoap = (params: CreateExpenceParams): SetRecordListSoapListItem => ({
   ...createRecordParamsToSoap(params),
@@ -85,9 +87,7 @@ export const createExpenceParamsToSoap = (params: CreateExpenceParams): SetRecor
 
 // createMove
 
-export interface CreateMoveParams extends CreateRecordParams {
-  fromPlaceId: number
-}
+export interface CreateMoveParams extends CreateRecordParams, MoveSpecificFields {}
 
 export const createMoveParamsToSoap = (
   params: CreateMoveParams,
@@ -113,10 +113,7 @@ export const createMoveParamsToSoap = (
 
 // createExchange
 
-export interface CreateExchangeParams extends CreateRecordParams {
-  fromCurrencyId: number
-  fromSum: number
-}
+export interface CreateExchangeParams extends CreateRecordParams, ExchangeSpecificFields {}
 
 export const createExchangeParamsToSoap = (
   params: CreateExchangeParams,
@@ -152,7 +149,7 @@ export interface CreateRecordParams {
 const createRecordParamsToSoap = ({ placeId, sum, currencyId, dateTime, comment }: CreateRecordParams) => ({
   place_id: placeId,
   currency_id: currencyId,
-  operation_date: dateTime || '', // need moment
+  operation_date: dateTime || new Date().toISOString(),
   is_duty: false,
   sum,
   comment,

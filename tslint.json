@@ -9,6 +9,7 @@
     "linebreak-style": [true, "LF"],
     "max-classes-per-file": [false],
     "member-access": [false],
+    "new-parens": false,
     "no-consecutive-blank-lines": [true, 2],
     "no-console": [true, "debug", "log", "time", "timeEnd", "trace"],
     "no-require-imports": true,

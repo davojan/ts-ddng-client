@@ -1,4 +1,5 @@
 import { SoapClient } from '.'
+import { FinanceOperation, recordListToOperations } from './FinanceOperation'
 import { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
 import {
   GetRecordListParams,
@@ -57,13 +58,22 @@ export class ApiClient {
   }
 
   /**
-   * Request plain records list filtered by the given params
+   * Requests plain records list filtered by the given params
    * Note: every move or exchange is represented as two records, not one.
    * To get higher-level operations see getOperations
    * @param params
    */
   getRecordList(params: GetRecordListParams): Promise<GetRecordListResult> {
     return this.soapClient.getRecordList(getRecordListParamsToSoap(params)).then(recordListFromSoap)
+  }
+
+  /**
+   * Same as getRecordList but result is converted into high-level finance operations:
+   *  incomes, expences, moves and exchanges. Every operation represented as a single record with polimorphic type
+   *  depending on the operation type.
+   */
+  getOperations(params: GetRecordListParams): Promise<FinanceOperation[]> {
+    return this.getRecordList(params).then(recordListToOperations)
   }
 
   /**

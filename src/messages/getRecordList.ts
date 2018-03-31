@@ -189,7 +189,7 @@ export interface GetRecordListResultItem {
 }
 
 export const recordListFromSoap = (soap: GetRecordListSoapResult): GetRecordListResult =>
-  soap.getRecordListReturn.map(r => ({
+  soap.getRecordListReturn.filter(x => x).map(r => ({
     id: +r.id,
     placeId: +r.budget_account_id,
     budgetObjectId: +r.budget_object_id,
