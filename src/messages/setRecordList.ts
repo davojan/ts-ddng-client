@@ -69,7 +69,7 @@ export interface CreateIncomeParams extends CreateRecordParams, IncomeSpecificFi
 
 export const createIncomeParamsToSoap = (params: CreateIncomeParams): SetRecordListSoapListItem => ({
   ...createRecordParamsToSoap(params),
-  client_id: createRecordClientId1,
+  client_id: ++clientIdCounter,
   operation_type: RecordType.Income,
   budget_object_id: params.sourceId,
 })
@@ -80,7 +80,7 @@ export interface CreateExpenceParams extends CreateRecordParams, ExpenceSpecific
 
 export const createExpenceParamsToSoap = (params: CreateExpenceParams): SetRecordListSoapListItem => ({
   ...createRecordParamsToSoap(params),
-  client_id: createRecordClientId1,
+  client_id: ++clientIdCounter,
   operation_type: RecordType.Expence,
   budget_object_id: params.categoryId,
 })
@@ -93,17 +93,19 @@ export const createMoveParamsToSoap = (
   params: CreateMoveParams,
 ): [SetRecordListSoapListItem, SetRecordListSoapListItem] => {
   const common = { ...createRecordParamsToSoap(params), operation_type: RecordType.Move }
+  const toId = ++clientIdCounter
+  const fromId = ++clientIdCounter
   const toRecord = {
     ...common,
-    client_id: createRecordClientId1,
-    client_move_id: createRecordClientId2,
+    client_id: toId,
+    client_move_id: fromId,
     place_id: params.placeId,
     budget_object_id: params.fromPlaceId,
   }
   const fromRecord = {
     ...common,
-    client_id: createRecordClientId2,
-    client_move_id: createRecordClientId1,
+    client_id: fromId,
+    client_move_id: toId,
     place_id: params.fromPlaceId,
     budget_object_id: params.placeId,
     sum: -params.sum,
@@ -123,15 +125,18 @@ export const createExchangeParamsToSoap = (
     operation_type: RecordType.Exchange,
     budget_object_id: params.placeId,
   }
+  const toId = ++clientIdCounter
+  const fromId = ++clientIdCounter
   const toRecord = {
     ...common,
-    client_id: createRecordClientId1,
+    client_id: toId,
+    client_change_id: fromId,
     currency_id: params.currencyId,
   }
   const fromRecord = {
     ...common,
-    client_id: createRecordClientId2,
-    client_change_id: createRecordClientId1,
+    client_id: fromId,
+    client_change_id: toId,
     currency_id: params.fromCurrencyId,
     sum: -params.fromSum,
   }
@@ -155,5 +160,7 @@ const createRecordParamsToSoap = ({ placeId, sum, currencyId, dateTime, comment 
   comment,
 })
 
-export const createRecordClientId1 = 1
-export const createRecordClientId2 = 2
+/**
+ * Records client_id auto-increment counter
+ */
+let clientIdCounter = 0

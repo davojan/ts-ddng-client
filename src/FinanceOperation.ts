@@ -1,9 +1,11 @@
 import { GetRecordListResult, GetRecordListResultItem, RecordType } from './messages/getRecordList'
 import { CreateRecordParams } from './messages/setRecordList'
 
-export interface FinanceOperation extends CreateRecordParams {
+export interface BaseOperation extends CreateRecordParams {
   operationType: RecordType
 }
+
+export type FinanceOperation = IncomeOperation | ExpenceOperation | MoveOperation | ExchangeOperation
 
 // Income
 
@@ -11,7 +13,7 @@ export interface IncomeSpecificFields {
   sourceId: number
 }
 
-export interface IncomeOperation extends FinanceOperation, IncomeSpecificFields {
+export interface IncomeOperation extends BaseOperation, IncomeSpecificFields {
   operationType: RecordType.Income
 }
 
@@ -41,7 +43,7 @@ export interface ExpenceSpecificFields {
   categoryId: number
 }
 
-export interface ExpenceOperation extends FinanceOperation, ExpenceSpecificFields {
+export interface ExpenceOperation extends BaseOperation, ExpenceSpecificFields {
   operationType: RecordType.Expence
 }
 
@@ -71,7 +73,7 @@ export interface MoveSpecificFields {
   fromPlaceId: number
 }
 
-export interface MoveOperation extends FinanceOperation, MoveSpecificFields {
+export interface MoveOperation extends BaseOperation, MoveSpecificFields {
   operationType: RecordType.Move
 }
 
@@ -99,7 +101,7 @@ export interface ExchangeSpecificFields {
   fromSum: number
 }
 
-export interface ExchangeOperation extends FinanceOperation, ExchangeSpecificFields {
+export interface ExchangeOperation extends BaseOperation, ExchangeSpecificFields {
   operationType: RecordType.Exchange
 }
 

@@ -6,6 +6,7 @@ import {
   getRecordListParamsToSoap,
   GetRecordListResult,
   recordListFromSoap,
+  RecordType,
 } from './messages/getRecordList'
 import {
   CreateExchangeParams,
@@ -16,8 +17,7 @@ import {
   createIncomeParamsToSoap,
   CreateMoveParams,
   createMoveParamsToSoap,
-  createRecordClientId1,
-  createRecordClientId2,
+  SetRecordListSoapList,
 } from './messages/setRecordList'
 import { toBool } from './utils'
 
@@ -82,11 +82,7 @@ export class ApiClient {
    */
   createIncome(params: CreateIncomeParams): Promise<number> {
     return this.soapClient.setRecordList([createIncomeParamsToSoap(params)]).then(({ setRecordListReturn: result }) => {
-      if (
-        result.length === 1 &&
-        result[0].client_id === String(createRecordClientId1) &&
-        result[0].status === 'inserted'
-      ) {
+      if (result.length === 1 && result[0].status === 'inserted') {
         return +result[0].server_id
       } else {
         throw new Error(`Unexpected response during create income record: ${JSON.stringify(result)}`)
@@ -102,11 +98,7 @@ export class ApiClient {
     return this.soapClient
       .setRecordList([createExpenceParamsToSoap(params)])
       .then(({ setRecordListReturn: result }) => {
-        if (
-          result.length === 1 &&
-          result[0].client_id === String(createRecordClientId1) &&
-          result[0].status === 'inserted'
-        ) {
+        if (result.length === 1 && result[0].status === 'inserted') {
           return +result[0].server_id
         } else {
           throw new Error(`Unexpected response during create expence record: ${JSON.stringify(result)}`)
@@ -120,13 +112,7 @@ export class ApiClient {
    */
   createMove(params: CreateMoveParams): Promise<number[]> {
     return this.soapClient.setRecordList(createMoveParamsToSoap(params)).then(({ setRecordListReturn: result }) => {
-      if (
-        result.filter(
-          x =>
-            (x.client_id === String(createRecordClientId1) || x.client_id === String(createRecordClientId2)) &&
-            x.status === 'inserted',
-        ).length >= 2
-      ) {
+      if (result.filter(x => x.status === 'inserted').length >= 2) {
         return result.map(x => +x.server_id)
       } else {
         throw new Error(`Unexpected response during creating move operation: ${JSON.stringify(result)}`)
@@ -140,17 +126,64 @@ export class ApiClient {
    */
   createExchange(params: CreateExchangeParams): Promise<[number, number]> {
     return this.soapClient.setRecordList(createExchangeParamsToSoap(params)).then(({ setRecordListReturn: result }) => {
-      if (
-        result.length === 2 &&
-        result[0].client_id === String(createRecordClientId1) &&
-        result[0].status === 'inserted' &&
-        result[1].client_id === String(createRecordClientId2) &&
-        result[1].status === 'inserted'
-      ) {
+      if (result.length === 2 && result[0].status === 'inserted' && result[1].status === 'inserted') {
         return [+result[0].server_id, +result[1].server_id] as [number, number]
       } else {
         throw new Error(`Unexpected response during creating Exchange operation: ${JSON.stringify(result)}`)
       }
+    })
+  }
+
+  /**
+   * Creates several finance operation is a single request
+   * @returns list of server IDs of created records (multi-record operations' IDs are groupped)
+   */
+  createOperations(operations: FinanceOperation[]): Promise<Array<number | [number, number]>> {
+    const records: SetRecordListSoapList = []
+
+    for (const operation of operations) {
+      switch (operation.operationType) {
+        case RecordType.Income:
+          records.push(createIncomeParamsToSoap(operation))
+          break
+        case RecordType.Expence:
+          records.push(createExpenceParamsToSoap(operation))
+          break
+        case RecordType.Move:
+          records.push(...createMoveParamsToSoap(operation))
+          break
+        case RecordType.Exchange:
+          records.push(...createExchangeParamsToSoap(operation))
+      }
+    }
+
+    return this.soapClient.setRecordList(records).then(({ setRecordListReturn: result }) => {
+      const serverIds: Array<number | [number, number]> = []
+      if (records.length === result.length) {
+        for (const operation of operations) {
+          switch (operation.operationType) {
+            case RecordType.Income:
+            case RecordType.Expence:
+              const item = result.shift()
+              if (item && item.status === 'inserted') {
+                serverIds.push(+item.server_id)
+              } else {
+                throw Error(`Unexpected response during creating operations: ${JSON.stringify(result)}`)
+              }
+              break
+            case RecordType.Move:
+            case RecordType.Exchange:
+              const item1 = result.shift()
+              const item2 = result.shift()
+              if (item1 && item2 && item1.status === 'inserted' && item2.status === 'inserted') {
+                serverIds.push([+item1.server_id, +item2.server_id])
+              } else {
+                throw Error(`Unexpected response during creating operations: ${JSON.stringify(result)}`)
+              }
+          }
+        }
+      }
+      return serverIds
     })
   }
 }

@@ -1,5 +1,5 @@
 import { ApiClient } from '../src'
-import { isExchangeOperation } from '../src/FinanceOperation'
+import { FinanceOperation, isExchangeOperation } from '../src/FinanceOperation'
 import { PeriodType, RecordType } from '../src/messages/getRecordList'
 
 let client: ApiClient
@@ -22,17 +22,17 @@ test.skip('GetBalance API call', async () => {
   expect(Array.isArray(result)).toBeTruthy()
 })
 
-test('GetRecordList API call', async () => {
+test.skip('GetRecordList API call', async () => {
   const result = await client.getRecordList({
     includeDepts: true,
-    recordType: RecordType.Exchange,
-    periodType: PeriodType.LastYear,
+    recordType: RecordType.Expence,
+    periodType: PeriodType.LastMonth,
   })
   // console.debug(JSON.stringify(result, null, 2))
   expect(Array.isArray(result)).toBeTruthy()
 })
 
-test('GetOperations API call', async () => {
+test.skip('GetOperations API call', async () => {
   const result = await client.getOperations({
     includeDepts: true,
     recordType: RecordType.Exchange,
@@ -95,4 +95,29 @@ test.skip('CreateExchange API call', async () => {
     comment: 'xxx',
   })
   expect(result).toHaveLength(2)
+})
+
+test('Bulk operation creation', async () => {
+  const operations: FinanceOperation[] = []
+  operations.push({
+    operationType: RecordType.Exchange,
+    placeId: 40040,
+    sum: 200,
+    currencyId: 17,
+    fromCurrencyId: 18,
+    fromSum: 3333,
+    comment: '222',
+  })
+  operations.push({
+    operationType: RecordType.Expence,
+    placeId: 40040,
+    sum: 300,
+    currencyId: 17,
+    categoryId: 40010,
+    comment: '222',
+  })
+  const result = await client.createOperations(operations)
+  // console.debug(JSON.stringify(result, null, 2))
+  expect(result).toHaveLength(2)
+  expect(result[0]).toHaveLength(2)
 })
