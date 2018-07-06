@@ -41,7 +41,7 @@ export enum PeriodType {
 
 export enum RecordType {
   Income = 2,
-  Expence,
+  Expense,
   Move,
   Exchange,
 }

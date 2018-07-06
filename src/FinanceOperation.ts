@@ -5,7 +5,7 @@ export interface BaseOperation extends CreateRecordParams {
   operationType: RecordType
 }
 
-export type FinanceOperation = IncomeOperation | ExpenceOperation | MoveOperation | ExchangeOperation
+export type FinanceOperation = IncomeOperation | ExpenseOperation | MoveOperation | ExchangeOperation
 
 // Income
 
@@ -37,35 +37,35 @@ const incomeOperationFromRecord = ({
 export const isIncomeOperation = (operation: FinanceOperation): operation is IncomeOperation =>
   operation.operationType === RecordType.Income
 
-// Expence
+// Expense
 
-export interface ExpenceSpecificFields {
+export interface ExpenseSpecificFields {
   categoryId: number
 }
 
-export interface ExpenceOperation extends BaseOperation, ExpenceSpecificFields {
-  operationType: RecordType.Expence
+export interface ExpenseOperation extends BaseOperation, ExpenseSpecificFields {
+  operationType: RecordType.Expense
 }
 
-const expenceOperationFromRecord = ({
+const expenseOperationFromRecord = ({
   placeId,
   sum,
   currencyId,
   dateTime,
   comment,
   budgetObjectId,
-}: GetRecordListResultItem): ExpenceOperation => ({
+}: GetRecordListResultItem): ExpenseOperation => ({
   placeId,
   sum,
   currencyId,
   dateTime,
   comment,
-  operationType: RecordType.Expence,
+  operationType: RecordType.Expense,
   categoryId: budgetObjectId,
 })
 
-export const isExpenceOperation = (operation: FinanceOperation): operation is ExpenceOperation =>
-  operation.operationType === RecordType.Expence
+export const isExpenseOperation = (operation: FinanceOperation): operation is ExpenseOperation =>
+  operation.operationType === RecordType.Expense
 
 // Move
 
@@ -141,8 +141,8 @@ export function recordListToOperations(recordList: GetRecordListResult): Finance
         case RecordType.Income:
           result.push(incomeOperationFromRecord(record))
           break
-        case RecordType.Expence:
-          result.push(expenceOperationFromRecord(record))
+        case RecordType.Expense:
+          result.push(expenseOperationFromRecord(record))
           break
         case RecordType.Move:
         case RecordType.Exchange:

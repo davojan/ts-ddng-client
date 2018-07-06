@@ -11,8 +11,8 @@ import {
 import {
   CreateExchangeParams,
   createExchangeParamsToSoap,
-  CreateExpenceParams,
-  createExpenceParamsToSoap,
+  CreateExpenseParams,
+  createExpenseParamsToSoap,
   CreateIncomeParams,
   createIncomeParamsToSoap,
   CreateMoveParams,
@@ -69,7 +69,7 @@ export class ApiClient {
 
   /**
    * Same as getRecordList but result is converted into high-level finance operations:
-   *  incomes, expences, moves and exchanges. Every operation represented as a single record with polimorphic type
+   *  incomes, expenses, moves and exchanges. Every operation represented as a single record with polimorphic type
    *  depending on the operation type.
    */
   getOperations(params: GetRecordListParams): Promise<FinanceOperation[]> {
@@ -91,17 +91,17 @@ export class ApiClient {
   }
 
   /**
-   * Creates a single expence record
+   * Creates a single expense record
    * @returns created record server ID
    */
-  createExpence(params: CreateExpenceParams): Promise<number> {
+  createExpense(params: CreateExpenseParams): Promise<number> {
     return this.soapClient
-      .setRecordList([createExpenceParamsToSoap(params)])
+      .setRecordList([createExpenseParamsToSoap(params)])
       .then(({ setRecordListReturn: result }) => {
         if (result.length === 1 && result[0].status === 'inserted') {
           return +result[0].server_id
         } else {
-          throw new Error(`Unexpected response during create expence record: ${JSON.stringify(result)}`)
+          throw new Error(`Unexpected response during create expense record: ${JSON.stringify(result)}`)
         }
       })
   }
@@ -146,8 +146,8 @@ export class ApiClient {
         case RecordType.Income:
           records.push(createIncomeParamsToSoap(operation))
           break
-        case RecordType.Expence:
-          records.push(createExpenceParamsToSoap(operation))
+        case RecordType.Expense:
+          records.push(createExpenseParamsToSoap(operation))
           break
         case RecordType.Move:
           records.push(...createMoveParamsToSoap(operation))
@@ -163,7 +163,7 @@ export class ApiClient {
         for (const operation of operations) {
           switch (operation.operationType) {
             case RecordType.Income:
-            case RecordType.Expence:
+            case RecordType.Expense:
               const item = result.shift()
               if (item && item.status === 'inserted') {
                 serverIds.push(+item.server_id)

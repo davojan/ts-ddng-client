@@ -25,7 +25,7 @@ test.skip('GetBalance API call', async () => {
 test.skip('GetRecordList API call', async () => {
   const result = await client.getRecordList({
     includeDepts: true,
-    recordType: RecordType.Expence,
+    recordType: RecordType.Expense,
     periodType: PeriodType.LastMonth,
   })
   // console.debug(JSON.stringify(result, null, 2))
@@ -60,8 +60,8 @@ test.skip('CreateIncome API call', async () => {
   expect(result).toBeGreaterThan(1)
 })
 
-test.skip('CreateExpence API call', async () => {
-  const result = await client.createExpence({
+test.skip('CreateExpense API call', async () => {
+  const result = await client.createExpense({
     placeId: 40034,
     categoryId: 40010,
     sum: 20000,
@@ -109,7 +109,7 @@ test('Bulk operation creation', async () => {
     comment: '222',
   })
   operations.push({
-    operationType: RecordType.Expence,
+    operationType: RecordType.Expense,
     placeId: 40040,
     sum: 300,
     currencyId: 17,

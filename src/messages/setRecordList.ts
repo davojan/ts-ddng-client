@@ -1,6 +1,6 @@
 import {
   ExchangeSpecificFields,
-  ExpenceSpecificFields,
+  ExpenseSpecificFields,
   IncomeSpecificFields,
   MoveSpecificFields,
 } from '../FinanceOperation'
@@ -74,14 +74,14 @@ export const createIncomeParamsToSoap = (params: CreateIncomeParams): SetRecordL
   budget_object_id: params.sourceId,
 })
 
-// createExpence
+// createExpense
 
-export interface CreateExpenceParams extends CreateRecordParams, ExpenceSpecificFields {}
+export interface CreateExpenseParams extends CreateRecordParams, ExpenseSpecificFields {}
 
-export const createExpenceParamsToSoap = (params: CreateExpenceParams): SetRecordListSoapListItem => ({
+export const createExpenseParamsToSoap = (params: CreateExpenseParams): SetRecordListSoapListItem => ({
   ...createRecordParamsToSoap(params),
   client_id: ++clientIdCounter,
-  operation_type: RecordType.Expence,
+  operation_type: RecordType.Expense,
   budget_object_id: params.categoryId,
 })
 
