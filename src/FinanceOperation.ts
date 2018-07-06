@@ -35,7 +35,7 @@ const incomeOperationFromRecord = ({
 })
 
 export const isIncomeOperation = (operation: FinanceOperation): operation is IncomeOperation =>
-  operation.operationType === RecordType.Income && (operation as any).sourceId
+  operation.operationType === RecordType.Income
 
 // Expence
 
@@ -65,7 +65,7 @@ const expenceOperationFromRecord = ({
 })
 
 export const isExpenceOperation = (operation: FinanceOperation): operation is ExpenceOperation =>
-  operation.operationType === RecordType.Expence && (operation as any).categoryId
+  operation.operationType === RecordType.Expence
 
 // Move
 
@@ -92,7 +92,7 @@ function moveOperationFromRecords(record1: GetRecordListResultItem, record2: Get
 }
 
 export const isMoveOperation = (operation: FinanceOperation): operation is MoveOperation =>
-  operation.operationType === RecordType.Move && (operation as any).fromPlaceId
+  operation.operationType === RecordType.Move
 
 // Exchange
 
@@ -124,9 +124,7 @@ function exchangeOperationFromRecords(
 }
 
 export const isExchangeOperation = (operation: FinanceOperation): operation is ExchangeOperation =>
-  operation.operationType === RecordType.Exchange &&
-  (operation as any).fromCurrencyId &&
-  (operation as any).fromSum != null
+  operation.operationType === RecordType.Exchange
 
 /**
  * Converts low-level record list into high-level finance operations.

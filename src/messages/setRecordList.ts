@@ -157,7 +157,7 @@ const createRecordParamsToSoap = ({ placeId, sum, currencyId, dateTime, comment 
   operation_date: dateTime || new Date().toISOString(),
   is_duty: false,
   sum,
-  comment,
+  comment: comment || '',
 })
 
 /**

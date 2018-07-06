@@ -1,6 +1,6 @@
 {
   "name": "ts-ddng-client",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Javascript/typescript client library to conveniently work with API of drebedengi.ru personal finance service",
   "author": "David Galoyan <davojan@gmail.com>",
   "license": "MIT",
@@ -10,7 +10,7 @@
   "browser": "dist/bundle.js",
   "types": "dist/bundle.d.ts",
   "scripts": {
-    "build": "npm run build:lib & npm run build:umd",
+    "build": "run-p build:lib build:umd",
     "build:lib": "tsc --outDir lib --module commonjs",
     "build:es": "tsc --outDir es --module es2015",
     "build:umd": "npm run build:es && rollup --config && dts-bundle --name dist/bundle --main es --outputAsModuleFolder",
@@ -23,7 +23,7 @@
     "prepublishOnly": "npm run build",
     "prebuild": "npm run clean",
     "postbuild": "rimraf {lib,es}/**/__tests__",
-    "posttest": "npm run typecheck && npm run lint",
+    "posttest": "run-s typecheck lint",
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
     "precommit": "lint-staged",
@@ -53,7 +53,7 @@
     ]
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
+    "*.{ts,tsx}": [
       "prettier --write",
       "tslint --project tsconfig.tslint.json --format stylish --fix",
       "git add"
@@ -91,6 +91,7 @@
     "husky": "~0.14.3",
     "jest": "~22.4.2",
     "lint-staged": "~7.0.0",
+    "npm-run-all": "~4.1.2",
     "pascal-case": "^2.0.1",
     "prettier": "~1.11.1",
     "rimraf": "^2.6.1",
