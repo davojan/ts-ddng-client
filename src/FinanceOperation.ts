@@ -148,6 +148,7 @@ export function recordListToOperations(recordList: GetRecordListResult): Finance
         case RecordType.Exchange:
           const linkedRecordIdx = processingList.findIndex(x => x.id === record.linkedRecordId)
           if (linkedRecordIdx > -1) {
+            // get and remove linked record from the source list to avoid duplicate processing
             const linkedRecord = processingList.splice(linkedRecordIdx, 1)[0]
             if (record.operationType === RecordType.Move) {
               result.push(moveOperationFromRecords(record, linkedRecord))
