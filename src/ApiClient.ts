@@ -2,6 +2,12 @@ import { SoapClient } from '.'
 import { FinanceOperation, recordListToOperations } from './FinanceOperation'
 import { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
 import {
+  GetPlaceListParams,
+  getPlaceListParamsToSoap,
+  GetPlaceListResult,
+  placeListFromSoap,
+} from './messages/getPlaceList'
+import {
   GetRecordListParams,
   getRecordListParamsToSoap,
   GetRecordListResult,
@@ -61,7 +67,6 @@ export class ApiClient {
    * Requests plain records list filtered by the given params
    * Note: every move or exchange is represented as two records, not one.
    * To get higher-level operations see getOperations
-   * @param params
    */
   getRecordList(params: GetRecordListParams): Promise<GetRecordListResult> {
     return this.soapClient.getRecordList(getRecordListParamsToSoap(params)).then(recordListFromSoap)
@@ -185,5 +190,12 @@ export class ApiClient {
       }
       return serverIds
     })
+  }
+
+  /**
+   * Requests plain places list possibly filtered by ids
+   */
+  getPlaceList(params?: GetPlaceListParams): Promise<GetPlaceListResult> {
+    return this.soapClient.getPlaceList(getPlaceListParamsToSoap(params)).then(placeListFromSoap)
   }
 }

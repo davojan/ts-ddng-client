@@ -1,9 +1,10 @@
 import { promisify } from 'bluebird'
 
 import { GetBalanceSoapParams, GetBalanceSoapResult } from './messages/getBalance'
+import { GetPlaceListSoapParams, GetPlaceListSoapResult } from './messages/getPlaceList'
 import { GetRecordListSoapParams, GetRecordListSoapResult } from './messages/getRecordList'
 import { SetRecordListSoapList, SetRecordListSoapResult } from './messages/setRecordList'
-import { mapListToSoap, mapToSoap } from './paramsToSoap'
+import { listToSoap, mapListToSoap, mapToSoap } from './paramsToSoap'
 import { AsyncDdngClient, AuthArgs } from './soapTypes'
 import { xml2json } from './xml2json'
 
@@ -22,6 +23,7 @@ export class SoapClient {
       client.getBalanceAsync = promisify(client.getBalance)
       client.getRecordListAsync = promisify(client.getRecordList)
       client.setRecordListAsync = promisify(client.setRecordList)
+      client.getPlaceListAsync = promisify(client.getPlaceList)
       return client
     })
     this.authArgs = { apiId, login, pass }
@@ -65,6 +67,23 @@ export class SoapClient {
           console.error(`Error during SOAP request ${(client as any).lastRequest}`)
           throw err
         }),
+    )
+  }
+
+  getPlaceList(params?: GetPlaceListSoapParams): Promise<GetPlaceListSoapResult> {
+    return this.client.then(
+      client =>
+        client
+          .getPlaceListAsync({ ...this.authArgs, idList: listToSoap(params && params.idList) })
+          .then(xml2json)
+          .catch(err => {
+            console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+            throw err
+          }),
+      // .then(res => {
+      //   console.debug(`Previous SOAP request ${(client as any).lastRequest}`)
+      //   return res
+      // })
     )
   }
 }

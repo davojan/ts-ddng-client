@@ -58,3 +58,17 @@ test.skip('SetRecordList SOAP call', async () => {
   // console.debug(JSON.stringify(result, null, 2))
   expect(result).toBeDefined()
 })
+
+test.skip('GetPlaceList SOAP call', async () => {
+  const result = await client.getPlaceList()
+  // console.debug(JSON.stringify(result, null, 2))
+  expect(result).toBeDefined()
+  expect(result.getPlaceListReturn).not.toHaveLength(0)
+
+  const filtered = await client.getPlaceList({
+    idList: [result.getPlaceListReturn[0].id, result.getPlaceListReturn[1].id],
+  })
+  // console.debug(JSON.stringify(filtered, null, 2))
+  expect(filtered.getPlaceListReturn).toHaveLength(2)
+  expect(filtered.getPlaceListReturn[0].id).toEqual(result.getPlaceListReturn[0].id)
+})

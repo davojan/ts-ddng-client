@@ -97,7 +97,7 @@ test.skip('CreateExchange API call', async () => {
   expect(result).toHaveLength(2)
 })
 
-test('Bulk operation creation', async () => {
+test.skip('Bulk operation creation', async () => {
   const operations: FinanceOperation[] = []
   operations.push({
     operationType: RecordType.Exchange,
@@ -120,4 +120,16 @@ test('Bulk operation creation', async () => {
   // console.debug(JSON.stringify(result, null, 2))
   expect(result).toHaveLength(2)
   expect(result[0]).toHaveLength(2)
+})
+
+test('GetPlaceList API call', async () => {
+  const result = await client.getPlaceList()
+  // console.debug(JSON.stringify(result, null, 2))
+  expect(Array.isArray(result)).toBeTruthy()
+  expect(result).not.toHaveLength(0)
+
+  const filtered = await client.getPlaceList({ placeIds: result.slice(0, 2).map(x => x.id) })
+  // console.debug(JSON.stringify(filtered, null, 2))
+  expect(filtered).toHaveLength(2)
+  expect(filtered[0].id).toEqual(result[0].id)
 })

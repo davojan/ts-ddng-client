@@ -37,6 +37,19 @@ export function mapListToSoap(list: Array<Dictionary<any>> | undefined): any {
   return result
 }
 
+export function listToSoap(list: any[] | undefined): any {
+  if (!list || list.length === 0) {
+    return list
+  }
+
+  const result = {
+    $attributes: { $xsiType: '{http://schemas.xmlsoap.org/soap/encoding/}Array' },
+    item: list,
+  }
+
+  return result
+}
+
 interface ParamItem {
   key: string
   value: any
