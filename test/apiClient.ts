@@ -1,4 +1,4 @@
-import { ApiClient } from '../src'
+import { ApiClient, FilterType } from '../src'
 import { FinanceOperation, isExchangeOperation } from '../src/FinanceOperation'
 import { PeriodType, RecordType } from '../src/messages/getRecordList'
 
@@ -46,6 +46,14 @@ test.skip('GetOperations API call', async () => {
       expect(x.fromSum).toBeLessThan(0)
     }
   }
+
+  const placeFiltered = await client.getOperations({
+    placeFilterType: FilterType.OnlySelected,
+    placeIds: [result[0].placeId],
+  })
+  // console.debug(JSON.stringify(placeFiltered, null, 2))
+  expect(placeFiltered).not.toHaveLength(0)
+  expect(placeFiltered[0].placeId).toEqual(result[0].placeId)
 })
 
 test.skip('CreateIncome API call', async () => {
@@ -122,13 +130,13 @@ test.skip('Bulk operation creation', async () => {
   expect(result[0]).toHaveLength(2)
 })
 
-test('GetPlaceList API call', async () => {
-  const result = await client.getPlaceList()
+test.skip('GetPlaceList API call', async () => {
+  const result = await client.getPlaces()
   // console.debug(JSON.stringify(result, null, 2))
   expect(Array.isArray(result)).toBeTruthy()
   expect(result).not.toHaveLength(0)
 
-  const filtered = await client.getPlaceList({ placeIds: result.slice(0, 2).map(x => x.id) })
+  const filtered = await client.getPlaces({ placeIds: result.slice(0, 2).map(x => x.id) })
   // console.debug(JSON.stringify(filtered, null, 2))
   expect(filtered).toHaveLength(2)
   expect(filtered[0].id).toEqual(result[0].id)

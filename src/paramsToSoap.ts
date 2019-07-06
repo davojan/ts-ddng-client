@@ -74,6 +74,8 @@ function withXsdType(value: any) {
       $attributes: { $xsiType: `{http://www.w3.org/2001/XMLSchema}${xsdType}` },
       $value: value,
     }
+  } else if (Array.isArray(value)) {
+    return listToSoap(value)
   } else {
     return value
   }

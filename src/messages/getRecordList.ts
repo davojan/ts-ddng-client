@@ -85,7 +85,7 @@ export interface GetRecordListSoapParams {
   r_middle?: AveragingType
 
   r_is_place?: FilterType
-  r_place?: number[]
+  r_place?: string[]
 
   r_is_tag?: FilterType
   r_tag?: number[]
@@ -135,7 +135,7 @@ export const getRecordListParamsToSoap = (params: GetRecordListParams): GetRecor
 
   r_is_place:
     params.placeFilterType || (params.placeIds && params.placeIds.length ? FilterType.OnlySelected : FilterType.All),
-  r_place: params.placeIds,
+  r_place: params.placeIds && params.placeIds.map(String),
 
   r_is_tag: params.tagFilterType || (params.tagIds && params.tagIds.length ? FilterType.OnlySelected : FilterType.All),
   r_tag: params.tagIds,

@@ -1,4 +1,4 @@
-import { SoapClient } from '../src'
+import { FilterType, SoapClient } from '../src'
 import { GrouppingType, PeriodType, RecordType } from '../src/messages/getRecordList'
 
 let client: SoapClient
@@ -19,15 +19,19 @@ test.skip('GetBalance SOAP call', async () => {
 })
 
 test.skip('GetRecordList SOAP call', async () => {
+  const places = await client.getPlaceList()
   const result = await client.getRecordList({
     is_report: true,
     is_show_duty: true,
     r_how: GrouppingType.NoGroupping,
     r_what: RecordType.Exchange,
     r_period: PeriodType.LastYear,
+    r_is_place: FilterType.OnlySelected,
+    r_place: [places.getPlaceListReturn[0].id],
   })
   // console.debug(JSON.stringify(result, null, 2))
   expect(result).toBeDefined()
+  expect(result.getRecordListReturn).not.toHaveLength(0)
 })
 
 test.skip('SetRecordList SOAP call', async () => {

@@ -48,9 +48,7 @@ export interface GetPlaceListSoapResultItem {
   parent_id: string
 }
 
-export type GetPlaceListResult = GetPlaceListResultItem[]
-
-export interface GetPlaceListResultItem {
+export interface Place {
   id: number
   budgetFamilyId: number
   name: string
@@ -64,7 +62,7 @@ export interface GetPlaceListResultItem {
   parentId: number | null
 }
 
-export const placeListFromSoap = (soap: GetPlaceListSoapResult): GetPlaceListResult =>
+export const placeListFromSoap = (soap: GetPlaceListSoapResult): Place[] =>
   soap.getPlaceListReturn.filter(x => x).map(r => ({
     id: +r.id,
     budgetFamilyId: +r.budget_family_id,

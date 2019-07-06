@@ -1,12 +1,7 @@
 import { SoapClient } from '.'
 import { FinanceOperation, recordListToOperations } from './FinanceOperation'
 import { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
-import {
-  GetPlaceListParams,
-  getPlaceListParamsToSoap,
-  GetPlaceListResult,
-  placeListFromSoap,
-} from './messages/getPlaceList'
+import { GetPlaceListParams, getPlaceListParamsToSoap, Place, placeListFromSoap } from './messages/getPlaceList'
 import {
   GetRecordListParams,
   getRecordListParamsToSoap,
@@ -195,7 +190,7 @@ export class ApiClient {
   /**
    * Requests plain places list possibly filtered by ids
    */
-  getPlaceList(params?: GetPlaceListParams): Promise<GetPlaceListResult> {
+  getPlaces(params?: GetPlaceListParams): Promise<Place[]> {
     return this.soapClient.getPlaceList(getPlaceListParamsToSoap(params)).then(placeListFromSoap)
   }
 }

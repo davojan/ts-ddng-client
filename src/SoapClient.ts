@@ -21,9 +21,9 @@ export class SoapClient {
     const createClientAsync = promisify(soap.createClient)
     this.client = (createClientAsync as any)('https://www.drebedengi.ru/soap/dd.wsdl').then((client: any) => {
       client.getBalanceAsync = promisify(client.getBalance)
+      client.getPlaceListAsync = promisify(client.getPlaceList)
       client.getRecordListAsync = promisify(client.getRecordList)
       client.setRecordListAsync = promisify(client.setRecordList)
-      client.getPlaceListAsync = promisify(client.getPlaceList)
       return client
     })
     this.authArgs = { apiId, login, pass }
