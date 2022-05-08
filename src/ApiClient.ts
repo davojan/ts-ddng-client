@@ -58,6 +58,13 @@ export class ApiClient {
       )
   }
 
+  // TODO: remove GetBalanceParams. It was copied without thinking too much.
+  getCategoryList(params: GetBalanceParams) {
+    return this.soapClient
+      .getCategoryList()
+      .then(result => result.getCategoryListReturn)
+  } 
+
   /**
    * Requests plain records list filtered by the given params
    * Note: every move or exchange is represented as two records, not one.

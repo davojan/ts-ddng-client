@@ -163,4 +163,4 @@ const createRecordParamsToSoap = ({ placeId, sum, currencyId, dateTime, comment 
 /**
  * Records client_id auto-increment counter
  */
-let clientIdCounter = 0
+let clientIdCounter = Math.floor(Math.random() * 10000000000)

@@ -21,6 +21,7 @@ export class SoapClient {
     const createClientAsync = promisify(soap.createClient)
     this.client = (createClientAsync as any)('https://www.drebedengi.ru/soap/dd.wsdl').then((client: any) => {
       client.getBalanceAsync = promisify(client.getBalance)
+      client.getCategoryListAsync = promisify(client.getCategoryList)
       client.getPlaceListAsync = promisify(client.getPlaceList)
       client.getRecordListAsync = promisify(client.getRecordList)
       client.setRecordListAsync = promisify(client.setRecordList)
@@ -33,6 +34,19 @@ export class SoapClient {
     return this.client.then(client =>
       client
         .getBalanceAsync({ ...this.authArgs, params: mapToSoap(params) })
+        .then(xml2json)
+        .catch(err => {
+          console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+          throw err
+        }),
+    )
+  }
+
+  // TODO: remove params. It was copied without thinking too much.
+  getCategoryList() {
+    return this.client.then(client =>
+      client
+        .getCategoryListAsync({ ...this.authArgs, params: mapToSoap({}) })
         .then(xml2json)
         .catch(err => {
           console.error(`Error during SOAP request ${(client as any).lastRequest}`)
