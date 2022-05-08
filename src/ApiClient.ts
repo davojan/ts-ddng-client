@@ -58,11 +58,9 @@ export class ApiClient {
       )
   }
 
-  // TODO: remove GetBalanceParams. It was copied without thinking too much.
-  getCategoryList(params: GetBalanceParams) {
-    return this.soapClient
-      .getCategoryList()
-      .then(result => result.getCategoryListReturn)
+  async getCategoryList() {
+    const result = await this.soapClient.getCategoryList()
+    return result.getCategoryListReturn
   } 
 
   /**

@@ -6,8 +6,8 @@ import { SetRecordListSoapList, SetRecordListSoapResult } from './messages/setRe
 export interface AsyncDdngClient {
   getBalanceAsync: (args: AuthArgs & { params?: GetBalanceSoapParams }) => Promise<GetBalanceSoapResult>
 
-  // TODO: balance params. It was copied without thinking too much.
-  getCategoryListAsync: (args: AuthArgs & { params?: GetBalanceSoapParams }) => Promise<GetBalanceSoapResult>
+  // TODO: remove GetBalanceSoapResult params. It was copied without thinking too much.
+  getCategoryListAsync: (args: AuthArgs) => Promise<GetBalanceSoapResult>
 
   getPlaceListAsync: (args: AuthArgs & GetPlaceListSoapParams) => Promise<GetPlaceListSoapResult>
   getRecordListAsync: (args: AuthArgs & { params?: GetRecordListSoapParams }) => Promise<GetRecordListSoapResult>

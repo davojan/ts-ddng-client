@@ -42,11 +42,10 @@ export class SoapClient {
     )
   }
 
-  // TODO: remove params. It was copied without thinking too much.
   getCategoryList() {
     return this.client.then(client =>
       client
-        .getCategoryListAsync({ ...this.authArgs, params: mapToSoap({}) })
+        .getCategoryListAsync({ ...this.authArgs })
         .then(xml2json)
         .catch(err => {
           console.error(`Error during SOAP request ${(client as any).lastRequest}`)
