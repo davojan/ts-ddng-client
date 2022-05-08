@@ -9,6 +9,9 @@ export interface AsyncDdngClient {
   // TODO: remove GetBalanceSoapResult params. It was copied without thinking too much.
   getCategoryListAsync: (args: AuthArgs) => Promise<GetBalanceSoapResult>
 
+  // TODO: remove GetBalanceSoapResult params. It was copied without thinking too much.
+  getCurrencyListAsync: (args: AuthArgs) => Promise<GetBalanceSoapResult>
+
   getPlaceListAsync: (args: AuthArgs & GetPlaceListSoapParams) => Promise<GetPlaceListSoapResult>
   getRecordListAsync: (args: AuthArgs & { params?: GetRecordListSoapParams }) => Promise<GetRecordListSoapResult>
   setRecordListAsync: (args: AuthArgs & { list?: SetRecordListSoapList }) => Promise<SetRecordListSoapResult>
