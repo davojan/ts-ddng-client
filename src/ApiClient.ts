@@ -68,6 +68,11 @@ export class ApiClient {
     return result.getCurrencyListReturn
   } 
 
+  async getSourceList() {
+    const result = await this.soapClient.getSourceList();
+    return result.getSourceListReturn
+  } 
+
   /**
    * Requests plain records list filtered by the given params
    * Note: every move or exchange is represented as two records, not one.
