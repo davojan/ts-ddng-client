@@ -13,6 +13,7 @@ export interface AsyncDdngClient {
   getCurrencyListAsync: (args: AuthArgs) => Promise<GetBalanceSoapResult>
 
   getSourceListAsync: (args: AuthArgs) => Promise<any>
+  getTagListAsync: (args: AuthArgs) => Promise<any>
   getPlaceListAsync: (args: AuthArgs & GetPlaceListSoapParams) => Promise<GetPlaceListSoapResult>
   getRecordListAsync: (args: AuthArgs & { params?: GetRecordListSoapParams }) => Promise<GetRecordListSoapResult>
   setRecordListAsync: (args: AuthArgs & { list?: SetRecordListSoapList }) => Promise<SetRecordListSoapResult>

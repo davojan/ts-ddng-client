@@ -25,6 +25,7 @@ export class SoapClient {
       client.getPlaceListAsync = promisify(client.getPlaceList)
       client.getCurrencyListAsync = promisify(client.getCurrencyList)
       client.getSourceListAsync = promisify(client.getSourceList)
+      client.getTagListAsync = promisify(client.getTagList)
       client.getRecordListAsync = promisify(client.getRecordList)
       client.setRecordListAsync = promisify(client.setRecordList)
       return client
@@ -72,6 +73,18 @@ export class SoapClient {
     return this.client.then(client =>
       client
         .getSourceListAsync({ ...this.authArgs })
+        .then(xml2json)
+        .catch(err => {
+          console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+          throw err
+        }),
+    )
+  }
+
+  getTagList() {
+    return this.client.then(client =>
+      client
+        .getTagListAsync({ ...this.authArgs })
         .then(xml2json)
         .catch(err => {
           console.error(`Error during SOAP request ${(client as any).lastRequest}`)
