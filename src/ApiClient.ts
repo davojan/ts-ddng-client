@@ -58,6 +58,27 @@ export class ApiClient {
       )
   }
 
+  async getCategoryList() {
+    const result = await this.soapClient.getCategoryList()
+    return result.getCategoryListReturn
+  } 
+
+  async getCurrencyList() {
+    const result = await this.soapClient.getCurrencyList()
+    return result.getCurrencyListReturn
+  } 
+
+  async getSourceList() {
+    const result = await this.soapClient.getSourceList();
+    return result.getSourceListReturn
+  } 
+
+  async getTagList() {
+    const result = await this.soapClient.getTagList();
+    console.log('soap client result', result)
+    return result.getTagListReturn;
+  }
+
   /**
    * Requests plain records list filtered by the given params
    * Note: every move or exchange is represented as two records, not one.
