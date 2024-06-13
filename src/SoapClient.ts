@@ -21,7 +21,11 @@ export class SoapClient {
     const createClientAsync = promisify(soap.createClient)
     this.client = (createClientAsync as any)('https://www.drebedengi.ru/soap/dd.wsdl').then((client: any) => {
       client.getBalanceAsync = promisify(client.getBalance)
+      client.getCategoryListAsync = promisify(client.getCategoryList)
       client.getPlaceListAsync = promisify(client.getPlaceList)
+      client.getCurrencyListAsync = promisify(client.getCurrencyList)
+      client.getSourceListAsync = promisify(client.getSourceList)
+      client.getTagListAsync = promisify(client.getTagList)
       client.getRecordListAsync = promisify(client.getRecordList)
       client.setRecordListAsync = promisify(client.setRecordList)
       return client
@@ -40,6 +44,55 @@ export class SoapClient {
         }),
     )
   }
+
+  getCategoryList() {
+    return this.client.then(client =>
+      client
+        .getCategoryListAsync({ ...this.authArgs })
+        .then(xml2json)
+        .catch(err => {
+          console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+          throw err
+        }),
+    )
+  }
+
+  getCurrencyList() {
+    return this.client.then(client =>
+      client
+        .getCurrencyListAsync({ ...this.authArgs })
+        .then(xml2json)
+        .catch(err => {
+          console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+          throw err
+        }),
+    )
+  }
+
+  getSourceList() {
+    return this.client.then(client =>
+      client
+        .getSourceListAsync({ ...this.authArgs })
+        .then(xml2json)
+        .catch(err => {
+          console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+          throw err
+        }),
+    )
+  }
+
+  getTagList() {
+    return this.client.then(client =>
+      client
+        .getTagListAsync({ ...this.authArgs })
+        .then(xml2json)
+        .catch(err => {
+          console.error(`Error during SOAP request ${(client as any).lastRequest}`)
+          throw err
+        }),
+    )
+  }
+
 
   getRecordList(params?: GetRecordListSoapParams): Promise<GetRecordListSoapResult> {
     return this.client.then(
