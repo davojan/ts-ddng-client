@@ -7,6 +7,12 @@ import type {
   SetCategoryListSoapList,
   SetCategoryListSoapResult,
 } from './messages/expenseCategories'
+import type {
+  GetSourceListSoapParams,
+  GetSourceListSoapResult,
+  SetSourceListSoapList,
+  SetSourceListSoapResult,
+} from './messages/incomeSources'
 import type { GetPlaceListSoapParams, GetPlaceListSoapResult } from './messages/getPlaceList'
 import type { GetRecordListSoapParams, GetRecordListSoapResult } from './messages/getRecordList'
 import type { SetRecordListSoapList, SetRecordListSoapResult } from './messages/setRecordList'
@@ -59,6 +65,16 @@ export class SoapClient {
     }
   }
 
+  async getSourceList(params?: GetSourceListSoapParams): Promise<GetSourceListSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.getSourceListAsync({ ...this.authArgs, idList: listToSoap(params?.idList) }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
   async getRecordList(params?: GetRecordListSoapParams): Promise<GetRecordListSoapResult> {
     const client = await this.client
 
@@ -74,6 +90,16 @@ export class SoapClient {
 
     try {
       return xml2json(await client.setCategoryListAsync({ ...this.authArgs, list: mapListToSoap(list) }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
+  async setSourceList(list?: SetSourceListSoapList): Promise<SetSourceListSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.setSourceListAsync({ ...this.authArgs, list: mapListToSoap(list) }))
     } catch (error) {
       reportLastRequest(client, error)
     }
@@ -119,11 +145,13 @@ function createSoapClient(): Promise<AsyncDdngClient> {
         getCategoryListAsync: args => callSoapMethod<GetCategoryListSoapResult>(rawClient, 'getCategoryList', args),
         getPlaceListAsync: args => callSoapMethod<GetPlaceListSoapResult>(rawClient, 'getPlaceList', args),
         getRecordListAsync: args => callSoapMethod<GetRecordListSoapResult>(rawClient, 'getRecordList', args),
+        getSourceListAsync: args => callSoapMethod<GetSourceListSoapResult>(rawClient, 'getSourceList', args),
         get lastRequest() {
           return rawClient.lastRequest
         },
         setCategoryListAsync: args => callSoapMethod<SetCategoryListSoapResult>(rawClient, 'setCategoryList', args),
         setRecordListAsync: args => callSoapMethod<SetRecordListSoapResult>(rawClient, 'setRecordList', args),
+        setSourceListAsync: args => callSoapMethod<SetSourceListSoapResult>(rawClient, 'setSourceList', args),
       })
     })
   })
@@ -164,8 +192,10 @@ type SoapMethodName =
   | 'getCategoryList'
   | 'getPlaceList'
   | 'getRecordList'
+  | 'getSourceList'
   | 'setCategoryList'
   | 'setRecordList'
+  | 'setSourceList'
 
 interface SoapMethodClient extends AsyncDdngClient {
   deleteObject(args: unknown, callback: SoapMethodCallback<DeleteObjectSoapResult>): void
@@ -173,8 +203,10 @@ interface SoapMethodClient extends AsyncDdngClient {
   getCategoryList(args: unknown, callback: SoapMethodCallback<GetCategoryListSoapResult>): void
   getPlaceList(args: unknown, callback: SoapMethodCallback<GetPlaceListSoapResult>): void
   getRecordList(args: unknown, callback: SoapMethodCallback<GetRecordListSoapResult>): void
+  getSourceList(args: unknown, callback: SoapMethodCallback<GetSourceListSoapResult>): void
   setCategoryList(args: unknown, callback: SoapMethodCallback<SetCategoryListSoapResult>): void
   setRecordList(args: unknown, callback: SoapMethodCallback<SetRecordListSoapResult>): void
+  setSourceList(args: unknown, callback: SoapMethodCallback<SetSourceListSoapResult>): void
 }
 
 type SoapMethod<TResult> = (args: unknown, callback: SoapMethodCallback<TResult>) => void

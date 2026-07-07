@@ -7,4 +7,11 @@ export type {
   GetExpenseCategoriesParams,
   UpdateExpenseCategoryParams,
 } from './messages/expenseCategories'
+export { IncomeSourceDeleteConflictError, IncomeSourceValidationError } from './messages/incomeSources'
+export type {
+  CreateIncomeSourceParams,
+  GetIncomeSourcesParams,
+  IncomeSource,
+  UpdateIncomeSourceParams,
+} from './messages/incomeSources'
 export { FilterType, PeriodType, RecordType, RecordTypeAll } from './messages/getRecordList'

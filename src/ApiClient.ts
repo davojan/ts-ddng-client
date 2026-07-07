@@ -15,6 +15,20 @@ import type {
   UpdateExpenseCategoryParams,
 } from './messages/expenseCategories'
 import type { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
+import {
+  IncomeSourceDeleteConflictError,
+  createIncomeSourceParamsToSoap,
+  getIncomeSourcesParamsToSoap,
+  incomeSourceListFromSoap,
+  isIncomeSourceDeleteConflict,
+  updateIncomeSourceParamsToSoap,
+} from './messages/incomeSources'
+import type {
+  CreateIncomeSourceParams,
+  GetIncomeSourcesParams,
+  IncomeSource,
+  UpdateIncomeSourceParams,
+} from './messages/incomeSources'
 import { getPlaceListParamsToSoap, placeListFromSoap } from './messages/getPlaceList'
 import type { GetPlaceListParams, Place } from './messages/getPlaceList'
 import type { GetRecordListParams, GetRecordListResult } from './messages/getRecordList'
@@ -94,6 +108,56 @@ export class ApiClient {
     }
 
     throw new ExpenseCategoryDeleteConflictError(id, new Error(`Unexpected delete response for category ${id}`))
+  }
+
+  async getIncomeSources(params?: GetIncomeSourcesParams): Promise<IncomeSource[]> {
+    const result = await this.soapClient.getSourceList(getIncomeSourcesParamsToSoap(params))
+    return incomeSourceListFromSoap(result)
+  }
+
+  async getIncomeSourceById(id: number): Promise<IncomeSource | null> {
+    const sources = await this.getIncomeSources({ sourceIds: [id] })
+    return sources[0] || null
+  }
+
+  async createIncomeSource(params: CreateIncomeSourceParams): Promise<number> {
+    const { setSourceListReturn: result } = await this.soapClient.setSourceList([
+      createIncomeSourceParamsToSoap(params),
+    ])
+
+    if (result.length === 1 && result[0].status === 'inserted') {
+      return +result[0].server_id
+    }
+
+    throw new Error(`Unexpected response during create income source: ${JSON.stringify(result)}`)
+  }
+
+  async updateIncomeSource(params: UpdateIncomeSourceParams): Promise<void> {
+    const { setSourceListReturn: result } = await this.soapClient.setSourceList([
+      updateIncomeSourceParamsToSoap(params),
+    ])
+
+    if (result.length === 1 && result[0].status === 'updated') {
+      return
+    }
+
+    throw new Error(`Unexpected response during update income source: ${JSON.stringify(result)}`)
+  }
+
+  async deleteIncomeSource(id: number): Promise<void> {
+    try {
+      const result = await this.soapClient.deleteObject({ id, type: 'object' })
+      if (+result.deleteObjectReturn === 1) {
+        return
+      }
+    } catch (error) {
+      if (isIncomeSourceDeleteConflict(error)) {
+        throw new IncomeSourceDeleteConflictError(id, error)
+      }
+      throw error
+    }
+
+    throw new IncomeSourceDeleteConflictError(id, new Error(`Unexpected delete response for income source ${id}`))
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResult> {
