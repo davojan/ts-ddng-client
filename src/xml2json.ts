@@ -1,4 +1,4 @@
-import { Dictionary } from './types'
+import type { Dictionary } from './types'
 
 /**
  * Converts JSON-represented XML data returned by SOAP request into idiomatic JSON
@@ -18,18 +18,21 @@ export function xml2json(value: any): any {
         return xmlArray2json(value.item)
       case 'Map':
         return xmlMap2json(value.item)
-      case 'unknown':
+      case 'unknown': {
         const result: Dictionary<any> = {}
         for (const key in value) {
-          if (value.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(value, key)) {
             result[key] = xml2json(value[key])
           }
         }
         return result
+      }
       default:
         return value.$value
     }
   }
+
+  return value
 }
 
 const attributesKey = '$attributes'
@@ -47,8 +50,7 @@ function xmlMap2json(value: any[]): Dictionary<any> {
   if (Array.isArray(value)) {
     for (const item of value) {
       const key = item.key.$value
-      const val = item.value && item.value.$value
-      result[key] = val
+      result[key] = xml2json(item.value)
     }
   }
   return result

@@ -1,4 +1,4 @@
-import { Dictionary } from './types'
+import type { Dictionary } from './types'
 
 /**
  * Converts plain-object params to the format that will be correctly represented in SOAP request
@@ -59,7 +59,7 @@ function mapToParamItems(map: Dictionary<any>): ParamItem[] {
   const result: ParamItem[] = []
 
   for (const key in map) {
-    if (map.hasOwnProperty(key) && map[key] !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(map, key) && map[key] !== undefined) {
       result.push({ key, value: withXsdType(map[key]) })
     }
   }

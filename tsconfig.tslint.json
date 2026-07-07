@@ -1,9 +1,0 @@
-{
-  "extends": "./project/tsconfig.base",
-  "exclude": [
-    "node_modules",
-    "dist",
-    "es",
-    "lib"
-  ]
-}

@@ -63,16 +63,18 @@ export interface Place {
 }
 
 export const placeListFromSoap = (soap: GetPlaceListSoapResult): Place[] =>
-  soap.getPlaceListReturn.filter(x => x).map(r => ({
-    id: +r.id,
-    budgetFamilyId: +r.budget_family_id,
-    name: r.name,
-    isHidden: toBool(r.is_hidden),
-    isAutohide: toBool(r.is_autohide),
-    isForDuty: toBool(r.is_for_duty),
-    isCreditCard: toBool(r.is_credit_card),
-    purseUserId: r.purse_of_nuid == null ? null : +r.purse_of_nuid,
-    iconId: r.icon_id == null ? null : +r.icon_id,
-    iconUrl: r.icon_id == null ? null : `http://www.drebedengi.ru/img/pl${r.icon_id}.gif`,
-    parentId: r.parent_id == null || +r.parent_id <= 0 ? null : +r.parent_id,
-  }))
+  soap.getPlaceListReturn
+    .filter(x => x)
+    .map(r => ({
+      id: +r.id,
+      budgetFamilyId: +r.budget_family_id,
+      name: r.name,
+      isHidden: toBool(r.is_hidden),
+      isAutohide: toBool(r.is_autohide),
+      isForDuty: toBool(r.is_for_duty),
+      isCreditCard: toBool(r.is_credit_card),
+      purseUserId: r.purse_of_nuid == null ? null : +r.purse_of_nuid,
+      iconId: r.icon_id == null ? null : +r.icon_id,
+      iconUrl: r.icon_id == null ? null : `http://www.drebedengi.ru/img/pl${r.icon_id}.gif`,
+      parentId: r.parent_id == null || +r.parent_id <= 0 ? null : +r.parent_id,
+    }))

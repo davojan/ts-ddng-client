@@ -1,5 +1,6 @@
-import { GetRecordListResult, GetRecordListResultItem, RecordType } from './messages/getRecordList'
-import { CreateRecordParams } from './messages/setRecordList'
+import type { GetRecordListResult, GetRecordListResultItem } from './messages/getRecordList'
+import { RecordType } from './messages/getRecordList'
+import type { CreateRecordParams } from './messages/setRecordList'
 
 export interface BaseOperation extends CreateRecordParams {
   operationType: RecordType
@@ -145,7 +146,7 @@ export function recordListToOperations(recordList: GetRecordListResult): Finance
           result.push(expenseOperationFromRecord(record))
           break
         case RecordType.Move:
-        case RecordType.Exchange:
+        case RecordType.Exchange: {
           const linkedRecordIdx = processingList.findIndex(x => x.id === record.linkedRecordId)
           if (linkedRecordIdx > -1) {
             // get and remove linked record from the source list to avoid duplicate processing
@@ -159,6 +160,7 @@ export function recordListToOperations(recordList: GetRecordListResult): Finance
             console.error('Linked record not found for move/exchange record:', record)
           }
           break
+        }
       }
     }
   }

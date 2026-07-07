@@ -1,10 +1,21 @@
 {
-  "extends": "./project/tsconfig.base",
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test",
-    "es",
-    "lib"
-  ]
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "ignoreDeprecations": "6.0",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "declaration": false,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts", "eslint.config.mjs"],
+  "exclude": ["coverage", "dist", "es", "lib", "node_modules"]
 }

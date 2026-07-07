@@ -122,7 +122,7 @@ export const getRecordListParamsToSoap = (params: GetRecordListParams): GetRecor
 
   r_period: params.periodFrom || params.periodTo ? PeriodType.Custom : params.periodType || PeriodType.Last20Records,
   period_from: params.periodType === PeriodType.Custom ? params.periodFrom : undefined,
-  period_to: params.periodType === PeriodType.Custom ? params.periodFrom : undefined,
+  period_to: params.periodType === PeriodType.Custom ? params.periodTo : undefined,
   relative_date: params.periodType !== PeriodType.Custom ? params.relativeDate : undefined,
 
   r_how: GrouppingType.NoGroupping,
@@ -189,20 +189,22 @@ export interface GetRecordListResultItem {
 }
 
 export const recordListFromSoap = (soap: GetRecordListSoapResult): GetRecordListResult =>
-  soap.getRecordListReturn.filter(x => x).map(r => ({
-    id: +r.id,
-    placeId: +r.budget_account_id,
-    budgetObjectId: +r.budget_object_id,
-    budgetFamilyId: +r.budget_family_id,
-    categoryName: r.name,
-    sum: +r.difference,
-    userId: +r.user_nuid,
-    isDept: toBool(r.is_duty),
-    dateTime: r.operation_date,
-    comment: r.comment || '',
-    currencyId: +r.currency_id,
-    groupId: r.group_id == null ? r.group_id : +r.group_id,
-    operationType: +r.operation_type,
-    timestamp: +r.oper_timestamp,
-    linkedRecordId: r.id2 ? +r.id2 : undefined,
-  }))
+  soap.getRecordListReturn
+    .filter(x => x)
+    .map(r => ({
+      id: +r.id,
+      placeId: +r.budget_account_id,
+      budgetObjectId: +r.budget_object_id,
+      budgetFamilyId: +r.budget_family_id,
+      categoryName: r.name,
+      sum: +r.difference,
+      userId: +r.user_nuid,
+      isDept: toBool(r.is_duty),
+      dateTime: r.operation_date,
+      comment: r.comment || '',
+      currencyId: +r.currency_id,
+      groupId: r.group_id == null ? null : +r.group_id,
+      operationType: +r.operation_type,
+      timestamp: +r.oper_timestamp,
+      linkedRecordId: r.id2 ? +r.id2 : undefined,
+    }))

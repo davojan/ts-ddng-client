@@ -1,25 +1,24 @@
-import { SoapClient } from '.'
-import { FinanceOperation, recordListToOperations } from './FinanceOperation'
-import { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
-import { GetPlaceListParams, getPlaceListParamsToSoap, Place, placeListFromSoap } from './messages/getPlaceList'
-import {
-  GetRecordListParams,
-  getRecordListParamsToSoap,
-  GetRecordListResult,
-  recordListFromSoap,
-  RecordType,
-} from './messages/getRecordList'
-import {
+import { recordListToOperations } from './FinanceOperation'
+import type { FinanceOperation } from './FinanceOperation'
+import type { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
+import { getPlaceListParamsToSoap, placeListFromSoap } from './messages/getPlaceList'
+import type { GetPlaceListParams, Place } from './messages/getPlaceList'
+import type { GetRecordListParams, GetRecordListResult } from './messages/getRecordList'
+import { FilterType, RecordType, getRecordListParamsToSoap, recordListFromSoap } from './messages/getRecordList'
+import type {
   CreateExchangeParams,
-  createExchangeParamsToSoap,
   CreateExpenseParams,
-  createExpenseParamsToSoap,
   CreateIncomeParams,
-  createIncomeParamsToSoap,
   CreateMoveParams,
-  createMoveParamsToSoap,
   SetRecordListSoapList,
 } from './messages/setRecordList'
+import {
+  createExchangeParamsToSoap,
+  createExpenseParamsToSoap,
+  createIncomeParamsToSoap,
+  createMoveParamsToSoap,
+} from './messages/setRecordList'
+import { SoapClient } from './SoapClient'
 import { toBool } from './utils'
 
 /**
@@ -27,7 +26,7 @@ import { toBool } from './utils'
  * Hides ugly SOAP API
  */
 export class ApiClient {
-  private soapClient: SoapClient
+  private readonly soapClient: SoapClient
 
   constructor(apiId: string, login: string, pass: string) {
     this.soapClient = new SoapClient(apiId, login, pass)
@@ -163,7 +162,7 @@ export class ApiClient {
         for (const operation of operations) {
           switch (operation.operationType) {
             case RecordType.Income:
-            case RecordType.Expense:
+            case RecordType.Expense: {
               const item = result.shift()
               if (item && item.status === 'inserted') {
                 serverIds.push(+item.server_id)
@@ -171,8 +170,9 @@ export class ApiClient {
                 throw Error(`Unexpected response during creating operations: ${JSON.stringify(result)}`)
               }
               break
+            }
             case RecordType.Move:
-            case RecordType.Exchange:
+            case RecordType.Exchange: {
               const item1 = result.shift()
               const item2 = result.shift()
               if (item1 && item2 && item1.status === 'inserted' && item2.status === 'inserted') {
@@ -180,6 +180,7 @@ export class ApiClient {
               } else {
                 throw Error(`Unexpected response during creating operations: ${JSON.stringify(result)}`)
               }
+            }
           }
         }
       }
@@ -194,3 +195,5 @@ export class ApiClient {
     return this.soapClient.getPlaceList(getPlaceListParamsToSoap(params)).then(placeListFromSoap)
   }
 }
+
+export { FilterType }

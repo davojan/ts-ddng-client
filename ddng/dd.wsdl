@@ -36,6 +36,24 @@
 	<message name="getAccumListResponse">
 		<part name="getAccumListReturn" type="xsd:anyType"/>
 	</message>
+	<message name="getCheckList">
+		<part name="apiId" type="xsd:string"/>
+		<part name="login" type="xsd:string"/>
+		<part name="pass" type="xsd:string"/>
+		<part name="idList" type="xsd:anyType"/>
+	</message>
+	<message name="getCheckListResponse">
+		<part name="getCheckListReturn" type="xsd:anyType"/>
+	</message>
+	<message name="getCheckToRecordList">
+		<part name="apiId" type="xsd:string"/>
+		<part name="login" type="xsd:string"/>
+		<part name="pass" type="xsd:string"/>
+		<part name="idList" type="xsd:anyType"/>
+	</message>
+	<message name="getCheckToRecordListResponse">
+		<part name="getCheckToRecordListReturn" type="xsd:anyType"/>
+	</message>
 	<message name="getBalance">
 		<part name="apiId" type="xsd:string"/>
 		<part name="login" type="xsd:string"/>
@@ -177,6 +195,15 @@
 	<message name="parseTextDataResponse">
 		<part name="parseTextDataReturn" type="xsd:anyType"/>
 	</message>
+	<message name="parsePushData">
+		<part name="apiId" type="xsd:string"/>
+		<part name="login" type="xsd:string"/>
+		<part name="pass" type="xsd:string"/>
+		<part name="list" type="xsd:anyType"/>
+	</message>
+	<message name="parsePushDataResponse">
+		<part name="parsePushDataReturn" type="xsd:anyType"/>
+	</message>
 	<message name="setAccumList">
 		<part name="apiId" type="xsd:string"/>
 		<part name="login" type="xsd:string"/>
@@ -222,6 +249,24 @@
 	</message>
 	<message name="setPlaceListResponse">
 		<part name="setPlaceListReturn" type="xsd:anyType"/>
+	</message>
+	<message name="setCheckList">
+		<part name="apiId" type="xsd:string"/>
+		<part name="login" type="xsd:string"/>
+		<part name="pass" type="xsd:string"/>
+		<part name="list" type="xsd:anyType"/>
+	</message>
+	<message name="setCheckListResponse">
+		<part name="setCheckListReturn" type="xsd:anyType"/>
+	</message>
+	<message name="setCheckToRecordList">
+		<part name="apiId" type="xsd:string"/>
+		<part name="login" type="xsd:string"/>
+		<part name="pass" type="xsd:string"/>
+		<part name="list" type="xsd:anyType"/>
+	</message>
+	<message name="setCheckToRecordListResponse">
+		<part name="setCheckToRecordListReturn" type="xsd:anyType"/>
 	</message>
 	<message name="setRecordList">
 		<part name="apiId" type="xsd:string"/>
@@ -290,6 +335,20 @@
 			</documentation>
 			<input message="typens:getAccumList"/>
 			<output message="typens:getAccumListResponse"/>
+		</operation>
+		<operation name="getCheckList">
+			<documentation>
+				Gets list of checks; Only QR checks is synced; Return array of arrays: [id] => Internal check ID; [ext] => qr-url; [state] => the state of qr check process; [qr_sum] => the sum of check from QR; [qr_date] => the date of check from QR; If parameter [idList] is given, it will be treat as ID list of objects to retrieve# this is used for synchronization;
+			</documentation>
+			<input message="typens:getCheckList"/>
+			<output message="typens:getCheckListResponse"/>
+		</operation>
+		<operation name="getCheckToRecordList">
+			<documentation>
+				Gets list of check to record link; Only for QR checks; Return array of arrays: [id] => Internal link ID; [check_id] => ID of the check; [record_id] => ID of the record; If parameter [idList] is given, it will be treat as ID list of objects to retrieve# this is used for synchronization;
+			</documentation>
+			<input message="typens:getCheckToRecordList"/>
+			<output message="typens:getCheckToRecordListResponse"/>
 		</operation>
 		<operation name="getBalance">
 			<documentation>
@@ -403,6 +462,13 @@
 			<input message="typens:parseTextData"/>
 			<output message="typens:parseTextDataResponse"/>
 		</operation>
+		<operation name="parsePushData">
+			<documentation>
+				Try to parse text data as records; [def..] default field values if no rules detected; [list] => array (indexes must be 0,1,2...N) of strings to parse (UTF8); Returns the array of array - data for records;
+			</documentation>
+			<input message="typens:parsePushData"/>
+			<output message="typens:parsePushDataResponse"/>
+		</operation>
 		<operation name="setAccumList">
 			<documentation>
 				Insert or update accum list; [list] => array of arrays: 'server_id' or 'client_id' [int8] - server or client ID of the record# If client ID is present - try to insert new record, and return server2client correspondence in the result array# If server_id is present - try to update existing record, @see getAccumList description for other detail; Returns the array of server IDs, successfully changed; The client MUST save server IDs corresponded to client IDs, for subsequent 'update' and 'delete' calls;
@@ -437,6 +503,20 @@
 			</documentation>
 			<input message="typens:setPlaceList"/>
 			<output message="typens:setPlaceListResponse"/>
+		</operation>
+		<operation name="setCheckList">
+			<documentation>
+				Insert or update check list; [list] => array of arrays: 'server_id' or 'client_id' [int8] - server or client ID of the check# If client ID is present - try to insert new check, and return server2client correspondence in the result array# If server_id is present - try to update existing check, @param string $apiId;
+			</documentation>
+			<input message="typens:setCheckList"/>
+			<output message="typens:setCheckListResponse"/>
+		</operation>
+		<operation name="setCheckToRecordList">
+			<documentation>
+				Insert or update check to record link list; [list] => array of arrays: 'server_id' or 'client_id' [int8] - server or client ID of the check# If client ID is present - try to insert new check, and return server2client correspondence in the result array# If server_id is present - try to update existing check, @param string $apiId;
+			</documentation>
+			<input message="typens:setCheckToRecordList"/>
+			<output message="typens:setCheckToRecordListResponse"/>
 		</operation>
 		<operation name="setRecordList">
 			<documentation>
@@ -497,6 +577,24 @@
 			</output>
 		</operation>
 		<operation name="getAccumList">
+			<soap:operation soapAction="urn:SoapAction"/>
+			<input>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		<operation name="getCheckList">
+			<soap:operation soapAction="urn:SoapAction"/>
+			<input>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		<operation name="getCheckToRecordList">
 			<soap:operation soapAction="urn:SoapAction"/>
 			<input>
 				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -649,6 +747,15 @@
 				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
+		<operation name="parsePushData">
+			<soap:operation soapAction="urn:SoapAction"/>
+			<input>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
 		<operation name="setAccumList">
 			<soap:operation soapAction="urn:SoapAction"/>
 			<input>
@@ -686,6 +793,24 @@
 			</output>
 		</operation>
 		<operation name="setPlaceList">
+			<soap:operation soapAction="urn:SoapAction"/>
+			<input>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		<operation name="setCheckList">
+			<soap:operation soapAction="urn:SoapAction"/>
+			<input>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		<operation name="setCheckToRecordList">
 			<soap:operation soapAction="urn:SoapAction"/>
 			<input>
 				<soap:body namespace="urn:ddengi" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
