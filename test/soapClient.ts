@@ -2,7 +2,7 @@ import { FilterType, SoapClient } from '../src'
 import { GrouppingType, PeriodType, RecordType } from '../src/messages/getRecordList'
 
 let client: SoapClient
-const integrationTest = process.env.DDNG_RUN_INTEGRATION === '1' ? test : test.skip
+const integrationTest = process.env.DDNG_RUN_LEGACY_INTEGRATION === '1' ? test : test.skip
 
 beforeAll(() => {
   client = new SoapClient('demo_api', 'demo@example.com', 'demo')

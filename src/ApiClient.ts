@@ -1,5 +1,19 @@
 import { recordListToOperations } from './FinanceOperation'
 import type { FinanceOperation } from './FinanceOperation'
+import {
+  ExpenseCategoryDeleteConflictError,
+  createExpenseCategoryParamsToSoap,
+  expenseCategoryListFromSoap,
+  getExpenseCategoriesParamsToSoap,
+  isExpenseCategoryDeleteConflict,
+  updateExpenseCategoryParamsToSoap,
+} from './messages/expenseCategories'
+import type {
+  CreateExpenseCategoryParams,
+  ExpenseCategory,
+  GetExpenseCategoriesParams,
+  UpdateExpenseCategoryParams,
+} from './messages/expenseCategories'
 import type { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
 import { getPlaceListParamsToSoap, placeListFromSoap } from './messages/getPlaceList'
 import type { GetPlaceListParams, Place } from './messages/getPlaceList'
@@ -30,6 +44,56 @@ export class ApiClient {
 
   constructor(apiId: string, login: string, pass: string) {
     this.soapClient = new SoapClient(apiId, login, pass)
+  }
+
+  async getExpenseCategories(params?: GetExpenseCategoriesParams): Promise<ExpenseCategory[]> {
+    const result = await this.soapClient.getCategoryList(getExpenseCategoriesParamsToSoap(params))
+    return expenseCategoryListFromSoap(result)
+  }
+
+  async getExpenseCategoryById(id: number): Promise<ExpenseCategory | null> {
+    const categories = await this.getExpenseCategories({ categoryIds: [id] })
+    return categories[0] || null
+  }
+
+  async createExpenseCategory(params: CreateExpenseCategoryParams): Promise<number> {
+    const { setCategoryListReturn: result } = await this.soapClient.setCategoryList([
+      createExpenseCategoryParamsToSoap(params),
+    ])
+
+    if (result.length === 1 && result[0].status === 'inserted') {
+      return +result[0].server_id
+    }
+
+    throw new Error(`Unexpected response during create expense category: ${JSON.stringify(result)}`)
+  }
+
+  async updateExpenseCategory(params: UpdateExpenseCategoryParams): Promise<void> {
+    const { setCategoryListReturn: result } = await this.soapClient.setCategoryList([
+      updateExpenseCategoryParamsToSoap(params),
+    ])
+
+    if (result.length === 1 && result[0].status === 'updated') {
+      return
+    }
+
+    throw new Error(`Unexpected response during update expense category: ${JSON.stringify(result)}`)
+  }
+
+  async deleteExpenseCategory(id: number): Promise<void> {
+    try {
+      const result = await this.soapClient.deleteObject({ id, type: 'object' })
+      if (+result.deleteObjectReturn === 1) {
+        return
+      }
+    } catch (error) {
+      if (isExpenseCategoryDeleteConflict(error)) {
+        throw new ExpenseCategoryDeleteConflictError(id, error)
+      }
+      throw error
+    }
+
+    throw new ExpenseCategoryDeleteConflictError(id, new Error(`Unexpected delete response for category ${id}`))
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResult> {

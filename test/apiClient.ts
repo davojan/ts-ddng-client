@@ -1,10 +1,10 @@
 import { ApiClient, FilterType } from '../src'
-import type { FinanceOperation} from '../src/FinanceOperation';
+import type { FinanceOperation } from '../src/FinanceOperation'
 import { isExchangeOperation } from '../src/FinanceOperation'
 import { PeriodType, RecordType } from '../src/messages/getRecordList'
 
 let client: ApiClient
-const integrationTest = process.env.DDNG_RUN_INTEGRATION === '1' ? test : test.skip
+const integrationTest = process.env.DDNG_RUN_LEGACY_INTEGRATION === '1' ? test : test.skip
 
 beforeAll(() => {
   client = new ApiClient('demo_api', 'demo@example.com', 'demo')
