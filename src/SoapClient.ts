@@ -96,11 +96,13 @@ export class SoapClient {
     }
   }
 
-  async getRecordList(params?: GetRecordListSoapParams): Promise<GetRecordListSoapResult> {
+  async getRecordList(params?: GetRecordListSoapParams, idList?: number[]): Promise<GetRecordListSoapResult> {
     const client = await this.client
 
     try {
-      return xml2json(await client.getRecordListAsync({ ...this.authArgs, params: mapToSoap(params) }))
+      return xml2json(
+        await client.getRecordListAsync({ ...this.authArgs, params: mapToSoap(params), idList: listToSoap(idList) }),
+      )
     } catch (error) {
       reportLastRequest(client, error)
     }

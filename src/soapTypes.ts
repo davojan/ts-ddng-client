@@ -35,7 +35,9 @@ export interface AsyncDdngClient {
   getCategoryListAsync: (args: AuthArgs & GetCategoryListSoapParams) => Promise<GetCategoryListSoapResult>
   getCurrencyListAsync: (args: AuthArgs & GetCurrencyListSoapParams) => Promise<GetCurrencyListSoapResult>
   getPlaceListAsync: (args: AuthArgs & GetPlaceListSoapParams) => Promise<GetPlaceListSoapResult>
-  getRecordListAsync: (args: AuthArgs & { params?: GetRecordListSoapParams }) => Promise<GetRecordListSoapResult>
+  getRecordListAsync: (
+    args: AuthArgs & { idList?: number[]; params?: GetRecordListSoapParams },
+  ) => Promise<GetRecordListSoapResult>
   getSourceListAsync: (args: AuthArgs & GetSourceListSoapParams) => Promise<GetSourceListSoapResult>
   setCategoryListAsync: (args: AuthArgs & { list?: SetCategoryListSoapList }) => Promise<SetCategoryListSoapResult>
   setCurrencyListAsync: (args: AuthArgs & { list?: SetCurrencyListSoapList }) => Promise<SetCurrencyListSoapResult>

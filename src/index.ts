@@ -19,3 +19,40 @@ export type { CreateCurrencyParams, Currency, GetCurrenciesParams, UpdateCurrenc
 export { PlaceDeleteConflictError, PlaceValidationError } from './messages/getPlaceList'
 export type { CreatePlaceParams, GetPlacesParams, Place, UpdatePlaceParams } from './messages/getPlaceList'
 export { FilterType, PeriodType, RecordType, RecordTypeAll } from './messages/getRecordList'
+export {
+  FinanceOperationDeleteError,
+  FinanceOperationNotFoundError,
+  FinanceOperationTypeMismatchError,
+  FinanceOperationValidationError,
+  isExchangeOperation,
+  isExpenseOperation,
+  isIncomeOperation,
+  isMoveOperation,
+} from './FinanceOperation'
+export type {
+  CreateExchangeOperation,
+  CreateExpenseOperation,
+  CreateFinanceOperation,
+  CreateIncomeOperation,
+  CreateMoveOperation,
+  ExchangeOperation,
+  ExpenseOperation,
+  FinanceOperation,
+  IncomeOperation,
+  MoveOperation,
+  UpdateExchangeOperation,
+  UpdateExpenseOperation,
+  UpdateFinanceOperation,
+  UpdateIncomeOperation,
+  UpdateMoveOperation,
+} from './FinanceOperation'
+export type {
+  CreateExchangeParams,
+  CreateExpenseParams,
+  CreateIncomeParams,
+  CreateMoveParams,
+  UpdateExchangeParams,
+  UpdateExpenseParams,
+  UpdateIncomeParams,
+  UpdateMoveParams,
+} from './messages/setRecordList'

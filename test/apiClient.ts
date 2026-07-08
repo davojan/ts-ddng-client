@@ -1,5 +1,5 @@
 import { ApiClient, FilterType } from '../src'
-import type { FinanceOperation } from '../src/FinanceOperation'
+import type { CreateFinanceOperation } from '../src/FinanceOperation'
 import { isExchangeOperation } from '../src/FinanceOperation'
 import { PeriodType, RecordType } from '../src/messages/getRecordList'
 
@@ -109,7 +109,7 @@ integrationTest(
       comment: 'xxx',
       currencyId: 17,
     })
-    expect(result.length).toBeGreaterThanOrEqual(2)
+    expect(result).toBeGreaterThan(1)
   },
   30_000,
 )
@@ -126,7 +126,7 @@ integrationTest(
       dateTime: '2010-12-14 13:58:00',
       comment: 'xxx',
     })
-    expect(result).toHaveLength(2)
+    expect(result).toBeGreaterThan(1)
   },
   30_000,
 )
@@ -134,7 +134,7 @@ integrationTest(
 integrationTest(
   'Bulk operation creation',
   async () => {
-    const operations: FinanceOperation[] = []
+    const operations: CreateFinanceOperation[] = []
     operations.push({
       operationType: RecordType.Exchange,
       placeId: 40040,
@@ -155,7 +155,7 @@ integrationTest(
     const result = await client.createOperations(operations)
     // console.debug(JSON.stringify(result, null, 2))
     expect(result).toHaveLength(2)
-    expect(result[0]).toHaveLength(2)
+    expect(result[0]).toBeGreaterThan(1)
   },
   30_000,
 )

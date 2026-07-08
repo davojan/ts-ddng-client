@@ -147,16 +147,20 @@ export const getRecordListParamsToSoap = (params: GetRecordListParams): GetRecor
 })
 
 export interface GetRecordListSoapResult {
-  getRecordListReturn: GetRecordListSoapResultItem[]
+  getRecordListReturn: GetRecordListSoapResultValue
 }
 
 export interface GetRecordListSoapResultItem {
   id: string
   id2?: string
-  budget_account_id: string
+  server_move_id?: string
+  server_change_id?: string
+  budget_account_id?: string
+  place_id?: string
   budget_object_id: string
-  name: string
-  difference: string
+  name?: string
+  difference?: string
+  sum?: string
   user_nuid: string
   budget_family_id: string
   is_duty: string
@@ -165,7 +169,7 @@ export interface GetRecordListSoapResultItem {
   currency_id: string
   group_id: string | null
   operation_type: string
-  oper_timestamp: string
+  oper_timestamp?: string
 }
 
 export type GetRecordListResult = GetRecordListResultItem[]
@@ -188,16 +192,22 @@ export interface GetRecordListResultItem {
   linkedRecordId?: number
 }
 
+export type GetRecordListSoapResultValue =
+  | GetRecordListSoapResultItem[]
+  | Record<string, GetRecordListSoapResultItem | null>
+  | GetRecordListSoapResultItem
+  | null
+
 export const recordListFromSoap = (soap: GetRecordListSoapResult): GetRecordListResult =>
-  soap.getRecordListReturn
+  normalizeRecordListSoapValue(soap.getRecordListReturn)
     .filter(x => x)
     .map(r => ({
       id: +r.id,
-      placeId: +r.budget_account_id,
+      placeId: +(r.budget_account_id ?? r.place_id ?? 0),
       budgetObjectId: +r.budget_object_id,
       budgetFamilyId: +r.budget_family_id,
-      categoryName: r.name,
-      sum: +r.difference,
+      categoryName: r.name || '',
+      sum: +(r.difference ?? r.sum ?? 0),
       userId: +r.user_nuid,
       isDept: toBool(r.is_duty),
       dateTime: r.operation_date,
@@ -205,6 +215,33 @@ export const recordListFromSoap = (soap: GetRecordListSoapResult): GetRecordList
       currencyId: +r.currency_id,
       groupId: r.group_id == null ? null : +r.group_id,
       operationType: +r.operation_type,
-      timestamp: +r.oper_timestamp,
-      linkedRecordId: r.id2 ? +r.id2 : undefined,
+      timestamp: r.oper_timestamp == null ? 0 : +r.oper_timestamp,
+      linkedRecordId: linkedRecordIdFromSoap(r),
     }))
+
+function normalizeRecordListSoapValue(value: GetRecordListSoapResultValue): GetRecordListSoapResultItem[] {
+  if (value == null) {
+    return []
+  }
+
+  if (Array.isArray(value)) {
+    return value.filter(x => x)
+  }
+
+  if (isRecordListSoapItem(value)) {
+    return [value]
+  }
+
+  return Object.values(value).filter(x => x != null)
+}
+
+function isRecordListSoapItem(
+  value: Record<string, GetRecordListSoapResultItem | null> | GetRecordListSoapResultItem,
+): value is GetRecordListSoapResultItem {
+  return typeof value.id === 'string'
+}
+
+function linkedRecordIdFromSoap(record: GetRecordListSoapResultItem): number | undefined {
+  const id = record.id2 ?? record.server_move_id ?? record.server_change_id
+  return id ? +id : undefined
+}

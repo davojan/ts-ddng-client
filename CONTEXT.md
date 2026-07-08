@@ -141,3 +141,31 @@ Integration tests create and mutate only test-owned non-default currencies with 
 ### Currency Update
 
 Currency updates are replace-style for the fields supported by the high-level API. Callers send the full editable currency state, and patch-style merging is left to callers that first fetch the current currency.
+
+### Finance Operation Amount
+
+High-level finance operation APIs expose user-entered positive amounts. Drebedengi record signs are transport details: expenses and outgoing move/exchange legs may be stored as negative records, but CRUD models normalize amounts to positive values.
+
+### Finance Operation Identity
+
+High-level finance operation APIs expose one operation identifier. For single-record income and expense operations it is the Drebedengi record id. For two-record move and exchange operations it is the positive destination leg record id; the paired record id is an internal transport detail.
+
+### Finance Operation Update
+
+Finance operation updates are replace-style for the fields supported by the high-level API. Callers send the full editable operation state. For two-record move and exchange operations, the client fetches the paired Drebedengi record internally and updates both records together.
+
+### Finance Operation Type
+
+Finance operation update APIs keep the existing operation type fixed. Changing an expense into an income, move, or exchange is modeled as delete plus create rather than as an update.
+
+### Exchange Operation
+
+An exchange operation is a currency conversion inside one place. Drebedengi represents it as two linked records in the same place with different currencies; it is not a cross-place transfer.
+
+### Finance Operation List
+
+High-level per-type operation list APIs reuse Drebedengi record-list filters and force the relevant operation type internally. The filter model remains shared with `getRecordList`, while returned items are typed as expenses, incomes, moves, or exchanges.
+
+### Finance Operation Create
+
+Finance operation create APIs return one high-level operation identifier. For single-record income and expense operations this is the created record id. For two-record move and exchange operations this is the positive destination leg record id.

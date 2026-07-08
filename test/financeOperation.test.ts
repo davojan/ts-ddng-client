@@ -45,10 +45,45 @@ test('recordListToOperations collapses exchange records into one operation', () 
       currencyId: 17,
       dateTime: '2024-01-01 10:00:00',
       fromCurrencyId: 18,
-      fromSum: -100,
+      fromSum: 100,
+      id: 10,
       operationType: RecordType.Exchange,
       placeId: 5,
       sum: 5500,
+    },
+  ])
+})
+
+test('recordListToOperations normalizes expense amount to positive user amount', () => {
+  expect(
+    recordListToOperations([
+      {
+        budgetFamilyId: 1,
+        budgetObjectId: 7,
+        categoryName: 'Food',
+        comment: 'expense',
+        currencyId: 17,
+        dateTime: '2024-01-01 10:00:00',
+        groupId: null,
+        id: 12,
+        isDept: false,
+        operationType: RecordType.Expense,
+        placeId: 5,
+        sum: -123,
+        timestamp: 1,
+        userId: 3,
+      },
+    ]),
+  ).toEqual([
+    {
+      categoryId: 7,
+      comment: 'expense',
+      currencyId: 17,
+      dateTime: '2024-01-01 10:00:00',
+      id: 12,
+      operationType: RecordType.Expense,
+      placeId: 5,
+      sum: 123,
     },
   ])
 })
