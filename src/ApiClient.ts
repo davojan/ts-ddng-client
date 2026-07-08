@@ -29,8 +29,15 @@ import type {
   IncomeSource,
   UpdateIncomeSourceParams,
 } from './messages/incomeSources'
-import { getPlaceListParamsToSoap, placeListFromSoap } from './messages/getPlaceList'
-import type { GetPlaceListParams, Place } from './messages/getPlaceList'
+import {
+  PlaceDeleteConflictError,
+  createPlaceParamsToSoap,
+  getPlacesParamsToSoap,
+  isPlaceDeleteConflict,
+  placeListFromSoap,
+  updatePlaceParamsToSoap,
+} from './messages/getPlaceList'
+import type { CreatePlaceParams, GetPlacesParams, Place, UpdatePlaceParams } from './messages/getPlaceList'
 import type { GetRecordListParams, GetRecordListResult } from './messages/getRecordList'
 import { FilterType, RecordType, getRecordListParamsToSoap, recordListFromSoap } from './messages/getRecordList'
 import type {
@@ -158,6 +165,60 @@ export class ApiClient {
     }
 
     throw new IncomeSourceDeleteConflictError(id, new Error(`Unexpected delete response for income source ${id}`))
+  }
+
+  async getPlaces(params?: GetPlacesParams): Promise<Place[]> {
+    const result = await this.soapClient.getPlaceList(getPlacesParamsToSoap(params))
+    return placeListFromSoap(result)
+  }
+
+  async getPlaceById(id: number): Promise<Place | null> {
+    const places = await this.getPlaces({ placeIds: [id] })
+    return places[0] || null
+  }
+
+  async createPlace(params: CreatePlaceParams): Promise<number> {
+    const { setPlaceListReturn: result } = await this.soapClient.setPlaceList([createPlaceParamsToSoap(params)])
+
+    if (result.length === 1 && result[0].status === 'inserted') {
+      return +result[0].server_id
+    }
+
+    throw new Error(`Unexpected response during create place: ${JSON.stringify(result)}`)
+  }
+
+  async updatePlace(params: UpdatePlaceParams): Promise<void> {
+    const place = await this.getPlaceById(params.id)
+
+    if (!place) {
+      throw new Error(`Place ${params.id} does not exist`)
+    }
+
+    const { setPlaceListReturn: result } = await this.soapClient.setPlaceList([
+      updatePlaceParamsToSoap({ ...params, isForDuty: place.isForDuty }),
+    ])
+
+    if (result.length === 1 && result[0].status === 'updated') {
+      return
+    }
+
+    throw new Error(`Unexpected response during update place: ${JSON.stringify(result)}`)
+  }
+
+  async deletePlace(id: number): Promise<void> {
+    try {
+      const result = await this.soapClient.deleteObject({ id, type: 'object' })
+      if (+result.deleteObjectReturn === 1) {
+        return
+      }
+    } catch (error) {
+      if (isPlaceDeleteConflict(error)) {
+        throw new PlaceDeleteConflictError(id, error)
+      }
+      throw error
+    }
+
+    throw new PlaceDeleteConflictError(id, new Error(`Unexpected delete response for place ${id}`))
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResult> {
@@ -313,14 +374,6 @@ export class ApiClient {
     }
 
     return serverIds
-  }
-
-  /**
-   * Requests plain places list possibly filtered by ids
-   */
-  async getPlaces(params?: GetPlaceListParams): Promise<Place[]> {
-    const result = await this.soapClient.getPlaceList(getPlaceListParamsToSoap(params))
-    return placeListFromSoap(result)
   }
 }
 

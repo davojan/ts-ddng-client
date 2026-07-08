@@ -24,10 +24,51 @@ export interface GetPlaceListParams {
   placeIds?: number[]
 }
 
-export const getPlaceListParamsToSoap = (params?: GetPlaceListParams): GetPlaceListSoapParams => ({
+export type GetPlacesParams = GetPlaceListParams
+
+export interface CreatePlaceParams {
+  name: string
+  parentId?: number | null
+  isHidden?: boolean
+  isForDuty?: boolean
+  isAutohide?: boolean
+  sort?: number
+  iconId?: number | null
+}
+
+export interface UpdatePlaceParams {
+  id: number
+  name: string
+  parentId?: number | null
+  isHidden: boolean
+  isAutohide: boolean
+  sort: number
+  iconId?: number | null
+}
+
+export class PlaceValidationError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'PlaceValidationError'
+  }
+}
+
+export class PlaceDeleteConflictError extends Error {
+  constructor(
+    readonly placeId: number,
+    readonly originalError: unknown,
+  ) {
+    super(`Place ${placeId} cannot be deleted because it has linked objects`)
+    this.name = 'PlaceDeleteConflictError'
+  }
+}
+
+export const getPlacesParamsToSoap = (params?: GetPlacesParams): GetPlaceListSoapParams => ({
   // seems that this should always be true, false gives always empty results
   idList: params && params.placeIds && params.placeIds.map(x => String(x)),
 })
+
+export const getPlaceListParamsToSoap = getPlacesParamsToSoap
 
 export interface GetPlaceListSoapResult {
   getPlaceListReturn: GetPlaceListSoapResultItem[]
@@ -60,6 +101,32 @@ export interface Place {
   iconId: number | null
   iconUrl: string | null
   parentId: number | null
+  sort: number
+}
+
+export type SetPlaceListSoapList = SetPlaceListSoapListItem[]
+
+export interface SetPlaceListSoapListItem {
+  client_id?: number
+  server_id?: number
+  parent_id: number
+  name: string
+  is_hidden: boolean
+  is_autohide: boolean
+  is_for_duty: boolean
+  is_credit_card: boolean
+  sort: number
+  icon_id: number
+}
+
+export interface SetPlaceListSoapResult {
+  setPlaceListReturn: SetPlaceListSoapResultItem[]
+}
+
+export interface SetPlaceListSoapResultItem {
+  client_id?: string
+  server_id: string
+  status: string
 }
 
 export const placeListFromSoap = (soap: GetPlaceListSoapResult): Place[] =>
@@ -77,4 +144,74 @@ export const placeListFromSoap = (soap: GetPlaceListSoapResult): Place[] =>
       iconId: r.icon_id == null ? null : +r.icon_id,
       iconUrl: r.icon_id == null ? null : `http://www.drebedengi.ru/img/pl${r.icon_id}.gif`,
       parentId: r.parent_id == null || +r.parent_id <= 0 ? null : +r.parent_id,
+      sort: +r.sort,
     }))
+
+export function createPlaceParamsToSoap(params: CreatePlaceParams): SetPlaceListSoapListItem {
+  const name = normalizePlaceName(params.name)
+
+  return {
+    client_id: ++clientIdCounter,
+    parent_id: normalizeParentId(params.parentId),
+    name,
+    is_hidden: params.isHidden || false,
+    is_autohide: params.isAutohide || false,
+    is_for_duty: params.isForDuty || false,
+    is_credit_card: false,
+    sort: params.sort || 0,
+    icon_id: normalizeIconId(params.iconId),
+  }
+}
+
+export function updatePlaceParamsToSoap(params: UpdatePlaceSoapParams): SetPlaceListSoapListItem {
+  const name = normalizePlaceName(params.name)
+
+  if (params.parentId === params.id) {
+    throw new PlaceValidationError('Place cannot be its own parent')
+  }
+
+  return {
+    server_id: params.id,
+    parent_id: normalizeParentId(params.parentId),
+    name,
+    is_hidden: params.isHidden,
+    is_autohide: params.isAutohide,
+    is_for_duty: params.isForDuty,
+    is_credit_card: false,
+    sort: params.sort,
+    icon_id: normalizeIconId(params.iconId),
+  }
+}
+
+export function isPlaceDeleteConflict(error: unknown): boolean {
+  const message = getErrorMessage(error).toLowerCase()
+  return message.includes('connected') || message.includes('linked') || message.includes('delete them first')
+}
+
+function normalizePlaceName(name: string): string {
+  const normalized = name.trim()
+
+  if (!normalized) {
+    throw new PlaceValidationError('Place name is required')
+  }
+
+  return normalized
+}
+
+function normalizeParentId(parentId: number | null | undefined): number {
+  return parentId == null ? -1 : parentId
+}
+
+function normalizeIconId(iconId: number | null | undefined): number {
+  return iconId == null ? 0 : iconId
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+interface UpdatePlaceSoapParams extends UpdatePlaceParams {
+  isForDuty: boolean
+}
+
+let clientIdCounter = 0

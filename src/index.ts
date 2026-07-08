@@ -14,4 +14,6 @@ export type {
   IncomeSource,
   UpdateIncomeSourceParams,
 } from './messages/incomeSources'
+export { PlaceDeleteConflictError, PlaceValidationError } from './messages/getPlaceList'
+export type { CreatePlaceParams, GetPlacesParams, Place, UpdatePlaceParams } from './messages/getPlaceList'
 export { FilterType, PeriodType, RecordType, RecordTypeAll } from './messages/getRecordList'

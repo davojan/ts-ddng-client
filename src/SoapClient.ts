@@ -13,7 +13,12 @@ import type {
   SetSourceListSoapList,
   SetSourceListSoapResult,
 } from './messages/incomeSources'
-import type { GetPlaceListSoapParams, GetPlaceListSoapResult } from './messages/getPlaceList'
+import type {
+  GetPlaceListSoapParams,
+  GetPlaceListSoapResult,
+  SetPlaceListSoapList,
+  SetPlaceListSoapResult,
+} from './messages/getPlaceList'
 import type { GetRecordListSoapParams, GetRecordListSoapResult } from './messages/getRecordList'
 import type { SetRecordListSoapList, SetRecordListSoapResult } from './messages/setRecordList'
 import { listToSoap, mapListToSoap, mapToSoap } from './paramsToSoap'
@@ -115,6 +120,16 @@ export class SoapClient {
     }
   }
 
+  async setPlaceList(list?: SetPlaceListSoapList): Promise<SetPlaceListSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.setPlaceListAsync({ ...this.authArgs, list: mapListToSoap(list) }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
   async getPlaceList(params?: GetPlaceListSoapParams): Promise<GetPlaceListSoapResult> {
     const client = await this.client
 
@@ -150,6 +165,7 @@ function createSoapClient(): Promise<AsyncDdngClient> {
           return rawClient.lastRequest
         },
         setCategoryListAsync: args => callSoapMethod<SetCategoryListSoapResult>(rawClient, 'setCategoryList', args),
+        setPlaceListAsync: args => callSoapMethod<SetPlaceListSoapResult>(rawClient, 'setPlaceList', args),
         setRecordListAsync: args => callSoapMethod<SetRecordListSoapResult>(rawClient, 'setRecordList', args),
         setSourceListAsync: args => callSoapMethod<SetSourceListSoapResult>(rawClient, 'setSourceList', args),
       })
@@ -194,6 +210,7 @@ type SoapMethodName =
   | 'getRecordList'
   | 'getSourceList'
   | 'setCategoryList'
+  | 'setPlaceList'
   | 'setRecordList'
   | 'setSourceList'
 
@@ -205,6 +222,7 @@ interface SoapMethodClient extends AsyncDdngClient {
   getRecordList(args: unknown, callback: SoapMethodCallback<GetRecordListSoapResult>): void
   getSourceList(args: unknown, callback: SoapMethodCallback<GetSourceListSoapResult>): void
   setCategoryList(args: unknown, callback: SoapMethodCallback<SetCategoryListSoapResult>): void
+  setPlaceList(args: unknown, callback: SoapMethodCallback<SetPlaceListSoapResult>): void
   setRecordList(args: unknown, callback: SoapMethodCallback<SetRecordListSoapResult>): void
   setSourceList(args: unknown, callback: SoapMethodCallback<SetSourceListSoapResult>): void
 }

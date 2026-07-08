@@ -7,7 +7,12 @@ import type {
   SetCategoryListSoapList,
   SetCategoryListSoapResult,
 } from './messages/expenseCategories'
-import type { GetPlaceListSoapParams, GetPlaceListSoapResult } from './messages/getPlaceList'
+import type {
+  GetPlaceListSoapParams,
+  GetPlaceListSoapResult,
+  SetPlaceListSoapList,
+  SetPlaceListSoapResult,
+} from './messages/getPlaceList'
 import type { GetRecordListSoapParams, GetRecordListSoapResult } from './messages/getRecordList'
 import type {
   GetSourceListSoapParams,
@@ -26,6 +31,7 @@ export interface AsyncDdngClient {
   getRecordListAsync: (args: AuthArgs & { params?: GetRecordListSoapParams }) => Promise<GetRecordListSoapResult>
   getSourceListAsync: (args: AuthArgs & GetSourceListSoapParams) => Promise<GetSourceListSoapResult>
   setCategoryListAsync: (args: AuthArgs & { list?: SetCategoryListSoapList }) => Promise<SetCategoryListSoapResult>
+  setPlaceListAsync: (args: AuthArgs & { list?: SetPlaceListSoapList }) => Promise<SetPlaceListSoapResult>
   setRecordListAsync: (args: AuthArgs & { list?: SetRecordListSoapList }) => Promise<SetRecordListSoapResult>
   setSourceListAsync: (args: AuthArgs & { list?: SetSourceListSoapList }) => Promise<SetSourceListSoapResult>
 }

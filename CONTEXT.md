@@ -73,3 +73,43 @@ Income source updates are replace-style for the fields supported by the high-lev
 ### Income Source Description
 
 Income sources include a textual description returned by Drebedengi. The high-level model exposes it as `description`, and create/update inputs may provide it.
+
+### Place
+
+A user-defined hierarchical money location used by Drebedengi records, such as a cash wallet, bank account, or card. Use `Place` for this domain concept even when a user would casually say account.
+
+### Place Tree
+
+The hierarchy formed by places through their parent-child relationship.
+
+### Place Delete Conflict
+
+A domain error raised when a place cannot be deleted because the server reports dependent linked objects, such as child places or records.
+
+### Place CRUD API
+
+A high-level API that exposes separate create, read, update, and delete operations for places and does not leak Drebedengi transport-level save semantics such as `client_id` and `server_id`.
+
+### Place List
+
+The high-level read model for places is a flat list where each place carries its optional `parentId`. Tree construction is a consumer concern, not the default API response shape.
+
+### Place Validation
+
+Place input validation is split between the client and Drebedengi. The client validates deterministic input invariants, such as non-empty names, required identifiers for updates, and self-parenting. Drebedengi remains authoritative for referential rules, such as parent existence and delete dependencies.
+
+### Place Integration Test Data
+
+Integration tests create and mutate only test-owned places with a recognizable generated name prefix. Cleanup deletes those places after each run, and tests remain opt-in so ordinary test runs do not mutate the demo account.
+
+### Place Update
+
+Place updates are replace-style for the fields supported by the high-level API. Callers send the full editable place state, but a place cannot be converted between ordinary place and debt account through the high-level update API.
+
+### Place Flags
+
+Place metadata such as debt-account, auto-hide, credit-card, purse user, and icon fields belongs to the place read model. Debt-account, auto-hide, and icon metadata is writable when Drebedengi persists it; credit-card and purse-user metadata remain server-owned.
+
+### Debt Account
+
+A Drebedengi place representing debt with an external entity rather than ordinary owned money. Drebedengi exposes this as duty metadata.
