@@ -214,4 +214,4 @@ interface UpdatePlaceSoapParams extends UpdatePlaceParams {
   isForDuty: boolean
 }
 
-let clientIdCounter = 0
+let clientIdCounter = Date.now()

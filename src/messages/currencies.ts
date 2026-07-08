@@ -184,4 +184,4 @@ function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
 
-let clientIdCounter = 0
+let clientIdCounter = Date.now()
