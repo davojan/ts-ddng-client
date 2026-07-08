@@ -8,6 +8,12 @@ import type {
   SetCategoryListSoapResult,
 } from './messages/expenseCategories'
 import type {
+  GetCurrencyListSoapParams,
+  GetCurrencyListSoapResult,
+  SetCurrencyListSoapList,
+  SetCurrencyListSoapResult,
+} from './messages/currencies'
+import type {
   GetPlaceListSoapParams,
   GetPlaceListSoapResult,
   SetPlaceListSoapList,
@@ -27,10 +33,12 @@ export interface AsyncDdngClient {
   deleteObjectAsync: (args: AuthArgs & DeleteObjectSoapParams) => Promise<DeleteObjectSoapResult>
   getBalanceAsync: (args: AuthArgs & { params?: GetBalanceSoapParams }) => Promise<GetBalanceSoapResult>
   getCategoryListAsync: (args: AuthArgs & GetCategoryListSoapParams) => Promise<GetCategoryListSoapResult>
+  getCurrencyListAsync: (args: AuthArgs & GetCurrencyListSoapParams) => Promise<GetCurrencyListSoapResult>
   getPlaceListAsync: (args: AuthArgs & GetPlaceListSoapParams) => Promise<GetPlaceListSoapResult>
   getRecordListAsync: (args: AuthArgs & { params?: GetRecordListSoapParams }) => Promise<GetRecordListSoapResult>
   getSourceListAsync: (args: AuthArgs & GetSourceListSoapParams) => Promise<GetSourceListSoapResult>
   setCategoryListAsync: (args: AuthArgs & { list?: SetCategoryListSoapList }) => Promise<SetCategoryListSoapResult>
+  setCurrencyListAsync: (args: AuthArgs & { list?: SetCurrencyListSoapList }) => Promise<SetCurrencyListSoapResult>
   setPlaceListAsync: (args: AuthArgs & { list?: SetPlaceListSoapList }) => Promise<SetPlaceListSoapResult>
   setRecordListAsync: (args: AuthArgs & { list?: SetRecordListSoapList }) => Promise<SetRecordListSoapResult>
   setSourceListAsync: (args: AuthArgs & { list?: SetSourceListSoapList }) => Promise<SetSourceListSoapResult>

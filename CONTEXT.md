@@ -113,3 +113,31 @@ Place metadata such as debt-account, auto-hide, credit-card, purse user, and ico
 ### Debt Account
 
 A Drebedengi place representing debt with an external entity rather than ordinary owned money. Drebedengi exposes this as duty metadata.
+
+### Currency
+
+A user-defined money unit used by Drebedengi records and balances. A currency has an identifier, a display name, a course, a code, visibility metadata, autoupdate metadata, and a default-currency flag.
+
+### Default Currency
+
+The primary currency for a Drebedengi family. Exactly one currency is intended to be default at a time.
+
+### Currency CRUD API
+
+A high-level API that exposes separate create, read, update, and delete operations for currencies and does not leak Drebedengi transport-level save semantics such as `client_id` and `server_id`.
+
+### Currency List
+
+The high-level read model for currencies is a flat list of currency definitions rather than a hierarchy.
+
+### Currency Validation
+
+Currency input validation is split between the client and Drebedengi. The client validates deterministic input invariants, such as non-empty names and required autoupdate codes. Drebedengi remains authoritative for referential rules, uniqueness constraints, and default-currency side effects.
+
+### Currency Integration Test Data
+
+Integration tests create and mutate only test-owned non-default currencies with a recognizable generated name prefix. Cleanup deletes those currencies after each run, and tests remain opt-in so ordinary test runs do not mutate the demo account.
+
+### Currency Update
+
+Currency updates are replace-style for the fields supported by the high-level API. Callers send the full editable currency state, and patch-style merging is left to callers that first fetch the current currency.

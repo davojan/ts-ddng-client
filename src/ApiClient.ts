@@ -30,6 +30,15 @@ import type {
   UpdateIncomeSourceParams,
 } from './messages/incomeSources'
 import {
+  CurrencyDeleteConflictError,
+  createCurrencyParamsToSoap,
+  currencyListFromSoap,
+  getCurrenciesParamsToSoap,
+  isCurrencyDeleteConflict,
+  updateCurrencyParamsToSoap,
+} from './messages/currencies'
+import type { CreateCurrencyParams, Currency, GetCurrenciesParams, UpdateCurrencyParams } from './messages/currencies'
+import {
   PlaceDeleteConflictError,
   createPlaceParamsToSoap,
   getPlacesParamsToSoap,
@@ -165,6 +174,59 @@ export class ApiClient {
     }
 
     throw new IncomeSourceDeleteConflictError(id, new Error(`Unexpected delete response for income source ${id}`))
+  }
+
+  async getCurrencies(params?: GetCurrenciesParams): Promise<Currency[]> {
+    const result = await this.soapClient.getCurrencyList(getCurrenciesParamsToSoap(params))
+    return currencyListFromSoap(result)
+  }
+
+  async getCurrencyById(id: number): Promise<Currency | null> {
+    const currencies = await this.getCurrencies({ currencyIds: [id] })
+    return currencies[0] || null
+  }
+
+  async createCurrency(params: CreateCurrencyParams): Promise<number> {
+    const createParams = createCurrencyParamsToSoap(params)
+    const { setCurrencyListReturn: result } = await this.soapClient.setCurrencyList([createParams])
+    const inserted = result.find(
+      item => item.client_id === String(createParams.client_id) && item.status === 'inserted',
+    )
+
+    if (inserted) {
+      return +inserted.server_id
+    }
+
+    throw new Error(`Unexpected response during create currency: ${JSON.stringify(result)}`)
+  }
+
+  async updateCurrency(params: UpdateCurrencyParams): Promise<void> {
+    const { setCurrencyListReturn: result } = await this.soapClient.setCurrencyList([
+      updateCurrencyParamsToSoap(params),
+    ])
+    const updated = result.find(item => +item.server_id === params.id && item.status === 'updated')
+
+    if (updated) {
+      return
+    }
+
+    throw new Error(`Unexpected response during update currency: ${JSON.stringify(result)}`)
+  }
+
+  async deleteCurrency(id: number): Promise<void> {
+    try {
+      const result = await this.soapClient.deleteObject({ id, type: 'currency' })
+      if (+result.deleteObjectReturn === 1) {
+        return
+      }
+    } catch (error) {
+      if (isCurrencyDeleteConflict(error)) {
+        throw new CurrencyDeleteConflictError(id, error)
+      }
+      throw error
+    }
+
+    throw new CurrencyDeleteConflictError(id, new Error(`Unexpected delete response for currency ${id}`))
   }
 
   async getPlaces(params?: GetPlacesParams): Promise<Place[]> {

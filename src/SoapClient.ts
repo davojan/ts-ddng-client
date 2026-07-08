@@ -8,6 +8,12 @@ import type {
   SetCategoryListSoapResult,
 } from './messages/expenseCategories'
 import type {
+  GetCurrencyListSoapParams,
+  GetCurrencyListSoapResult,
+  SetCurrencyListSoapList,
+  SetCurrencyListSoapResult,
+} from './messages/currencies'
+import type {
   GetSourceListSoapParams,
   GetSourceListSoapResult,
   SetSourceListSoapList,
@@ -70,6 +76,16 @@ export class SoapClient {
     }
   }
 
+  async getCurrencyList(params?: GetCurrencyListSoapParams): Promise<GetCurrencyListSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.getCurrencyListAsync({ ...this.authArgs, idList: listToSoap(params?.idList) }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
   async getSourceList(params?: GetSourceListSoapParams): Promise<GetSourceListSoapResult> {
     const client = await this.client
 
@@ -95,6 +111,16 @@ export class SoapClient {
 
     try {
       return xml2json(await client.setCategoryListAsync({ ...this.authArgs, list: mapListToSoap(list) }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
+  async setCurrencyList(list?: SetCurrencyListSoapList): Promise<SetCurrencyListSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.setCurrencyListAsync({ ...this.authArgs, list: mapListToSoap(list) }))
     } catch (error) {
       reportLastRequest(client, error)
     }
@@ -158,6 +184,7 @@ function createSoapClient(): Promise<AsyncDdngClient> {
         deleteObjectAsync: args => callSoapMethod<DeleteObjectSoapResult>(rawClient, 'deleteObject', args),
         getBalanceAsync: args => callSoapMethod<GetBalanceSoapResult>(rawClient, 'getBalance', args),
         getCategoryListAsync: args => callSoapMethod<GetCategoryListSoapResult>(rawClient, 'getCategoryList', args),
+        getCurrencyListAsync: args => callSoapMethod<GetCurrencyListSoapResult>(rawClient, 'getCurrencyList', args),
         getPlaceListAsync: args => callSoapMethod<GetPlaceListSoapResult>(rawClient, 'getPlaceList', args),
         getRecordListAsync: args => callSoapMethod<GetRecordListSoapResult>(rawClient, 'getRecordList', args),
         getSourceListAsync: args => callSoapMethod<GetSourceListSoapResult>(rawClient, 'getSourceList', args),
@@ -165,6 +192,7 @@ function createSoapClient(): Promise<AsyncDdngClient> {
           return rawClient.lastRequest
         },
         setCategoryListAsync: args => callSoapMethod<SetCategoryListSoapResult>(rawClient, 'setCategoryList', args),
+        setCurrencyListAsync: args => callSoapMethod<SetCurrencyListSoapResult>(rawClient, 'setCurrencyList', args),
         setPlaceListAsync: args => callSoapMethod<SetPlaceListSoapResult>(rawClient, 'setPlaceList', args),
         setRecordListAsync: args => callSoapMethod<SetRecordListSoapResult>(rawClient, 'setRecordList', args),
         setSourceListAsync: args => callSoapMethod<SetSourceListSoapResult>(rawClient, 'setSourceList', args),
@@ -206,10 +234,12 @@ type SoapMethodName =
   | 'deleteObject'
   | 'getBalance'
   | 'getCategoryList'
+  | 'getCurrencyList'
   | 'getPlaceList'
   | 'getRecordList'
   | 'getSourceList'
   | 'setCategoryList'
+  | 'setCurrencyList'
   | 'setPlaceList'
   | 'setRecordList'
   | 'setSourceList'
@@ -218,10 +248,12 @@ interface SoapMethodClient extends AsyncDdngClient {
   deleteObject(args: unknown, callback: SoapMethodCallback<DeleteObjectSoapResult>): void
   getBalance(args: unknown, callback: SoapMethodCallback<GetBalanceSoapResult>): void
   getCategoryList(args: unknown, callback: SoapMethodCallback<GetCategoryListSoapResult>): void
+  getCurrencyList(args: unknown, callback: SoapMethodCallback<GetCurrencyListSoapResult>): void
   getPlaceList(args: unknown, callback: SoapMethodCallback<GetPlaceListSoapResult>): void
   getRecordList(args: unknown, callback: SoapMethodCallback<GetRecordListSoapResult>): void
   getSourceList(args: unknown, callback: SoapMethodCallback<GetSourceListSoapResult>): void
   setCategoryList(args: unknown, callback: SoapMethodCallback<SetCategoryListSoapResult>): void
+  setCurrencyList(args: unknown, callback: SoapMethodCallback<SetCurrencyListSoapResult>): void
   setPlaceList(args: unknown, callback: SoapMethodCallback<SetPlaceListSoapResult>): void
   setRecordList(args: unknown, callback: SoapMethodCallback<SetRecordListSoapResult>): void
   setSourceList(args: unknown, callback: SoapMethodCallback<SetSourceListSoapResult>): void

@@ -92,7 +92,7 @@ export interface SetCategoryListSoapResultItem {
 
 export interface DeleteObjectSoapParams {
   id: number
-  type: 'object'
+  type: 'currency' | 'object'
 }
 
 export interface DeleteObjectSoapResult {
