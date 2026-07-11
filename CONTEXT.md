@@ -169,3 +169,9 @@ High-level per-type operation list APIs reuse Drebedengi record-list filters and
 ### Finance Operation Create
 
 Finance operation create APIs return one high-level operation identifier. For single-record income and expense operations this is the created record id. For two-record move and exchange operations this is the positive destination leg record id.
+
+### Finance Reports
+
+Income and expense reports expose flat grouped rows with parent identifiers rather than building trees. Income rows identify sources and expense rows identify categories. Amounts are positive in the high-level interface even though Drebedengi returns negative expense differences.
+
+Report methods reuse record-list filters, force the matching operation and grouping types internally, and optionally expose Drebedengi averaging. Without a display currency, Drebedengi may return multiple rows for the same source or category, one per original currency. Parent and child aggregate rows can coexist and must not be summed together as independent totals.

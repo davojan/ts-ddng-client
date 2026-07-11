@@ -52,7 +52,7 @@ export type RecordTypeAll = 6
 export enum GrouppingType {
   NoGroupping = 1,
   IncomeBySource,
-  ExcpenceByCategory,
+  ExpenseByCategory,
 }
 
 export enum AveragingType {

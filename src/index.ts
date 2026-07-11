@@ -21,6 +21,8 @@ export type { CreatePlaceParams, GetPlacesParams, Place, UpdatePlaceParams } fro
 export { TagDeleteConflictError, TagValidationError } from './messages/tags'
 export type { CreateTagParams, GetTagsParams, Tag, UpdateTagParams } from './messages/tags'
 export { FilterType, PeriodType, RecordType, RecordTypeAll } from './messages/getRecordList'
+export { AveragingType } from './messages/getRecordList'
+export type { ExpenseReportItem, GetReportParams, IncomeReportItem } from './messages/getReport'
 export {
   FinanceOperationDeleteError,
   FinanceOperationNotFoundError,

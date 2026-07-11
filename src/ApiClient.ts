@@ -72,6 +72,18 @@ import {
   recordListFromSoap,
 } from './messages/getRecordList'
 import type {
+  ExpenseReportItem,
+  GetReportParams,
+  GetReportSoapResult,
+  IncomeReportItem,
+} from './messages/getReport'
+import {
+  expenseReportFromSoap,
+  getExpenseReportParamsToSoap,
+  getIncomeReportParamsToSoap,
+  incomeReportFromSoap,
+} from './messages/getReport'
+import type {
   CreateExchangeParams,
   CreateExpenseParams,
   CreateIncomeParams,
@@ -402,6 +414,16 @@ export class ApiClient {
   async getRecordList(params: GetRecordListParams): Promise<GetRecordListResult> {
     const result = await this.soapClient.getRecordList(getRecordListParamsToSoap(params))
     return recordListFromSoap(result)
+  }
+
+  async getIncomeReport(params: GetReportParams = {}): Promise<IncomeReportItem[]> {
+    const result = await this.soapClient.getRecordList<GetReportSoapResult>(getIncomeReportParamsToSoap(params))
+    return incomeReportFromSoap(result)
+  }
+
+  async getExpenseReport(params: GetReportParams = {}): Promise<ExpenseReportItem[]> {
+    const result = await this.soapClient.getRecordList<GetReportSoapResult>(getExpenseReportParamsToSoap(params))
+    return expenseReportFromSoap(result)
   }
 
   /**

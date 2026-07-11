@@ -112,7 +112,10 @@ export class SoapClient {
     }
   }
 
-  async getRecordList(params?: GetRecordListSoapParams, idList?: number[]): Promise<GetRecordListSoapResult> {
+  async getRecordList<TResult = GetRecordListSoapResult>(
+    params?: GetRecordListSoapParams,
+    idList?: number[],
+  ): Promise<TResult> {
     const client = await this.client
 
     try {
@@ -284,11 +287,13 @@ interface SoapMethodClient extends AsyncDdngClient {
   getPlaceList(args: unknown, callback: SoapMethodCallback<GetPlaceListSoapResult>): void
   getRecordList(args: unknown, callback: SoapMethodCallback<GetRecordListSoapResult>): void
   getSourceList(args: unknown, callback: SoapMethodCallback<GetSourceListSoapResult>): void
+  getTagList(args: unknown, callback: SoapMethodCallback<GetTagListSoapResult>): void
   setCategoryList(args: unknown, callback: SoapMethodCallback<SetCategoryListSoapResult>): void
   setCurrencyList(args: unknown, callback: SoapMethodCallback<SetCurrencyListSoapResult>): void
   setPlaceList(args: unknown, callback: SoapMethodCallback<SetPlaceListSoapResult>): void
   setRecordList(args: unknown, callback: SoapMethodCallback<SetRecordListSoapResult>): void
   setSourceList(args: unknown, callback: SoapMethodCallback<SetSourceListSoapResult>): void
+  setTagList(args: unknown, callback: SoapMethodCallback<SetTagListSoapResult>): void
 }
 
 type SoapMethod<TResult> = (args: unknown, callback: SoapMethodCallback<TResult>) => void
