@@ -27,6 +27,12 @@ import type {
   SetSourceListSoapResult,
 } from './messages/incomeSources'
 import type { SetRecordListSoapList, SetRecordListSoapResult } from './messages/setRecordList'
+import type {
+  GetTagListSoapParams,
+  GetTagListSoapResult,
+  SetTagListSoapList,
+  SetTagListSoapResult,
+} from './messages/tags'
 
 export interface AsyncDdngClient {
   lastRequest?: string
@@ -39,11 +45,13 @@ export interface AsyncDdngClient {
     args: AuthArgs & { idList?: number[]; params?: GetRecordListSoapParams },
   ) => Promise<GetRecordListSoapResult>
   getSourceListAsync: (args: AuthArgs & GetSourceListSoapParams) => Promise<GetSourceListSoapResult>
+  getTagListAsync: (args: AuthArgs & GetTagListSoapParams) => Promise<GetTagListSoapResult>
   setCategoryListAsync: (args: AuthArgs & { list?: SetCategoryListSoapList }) => Promise<SetCategoryListSoapResult>
   setCurrencyListAsync: (args: AuthArgs & { list?: SetCurrencyListSoapList }) => Promise<SetCurrencyListSoapResult>
   setPlaceListAsync: (args: AuthArgs & { list?: SetPlaceListSoapList }) => Promise<SetPlaceListSoapResult>
   setRecordListAsync: (args: AuthArgs & { list?: SetRecordListSoapList }) => Promise<SetRecordListSoapResult>
   setSourceListAsync: (args: AuthArgs & { list?: SetSourceListSoapList }) => Promise<SetSourceListSoapResult>
+  setTagListAsync: (args: AuthArgs & { list?: SetTagListSoapList }) => Promise<SetTagListSoapResult>
 }
 
 export interface AuthArgs {

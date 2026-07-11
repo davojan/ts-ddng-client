@@ -93,6 +93,15 @@ import {
   updateMoveParamsToSoap,
 } from './messages/setRecordList'
 import { SoapClient } from './SoapClient'
+import {
+  TagDeleteConflictError,
+  createTagParamsToSoap,
+  getTagsParamsToSoap,
+  isTagDeleteConflict,
+  tagListFromSoap,
+  updateTagParamsToSoap,
+} from './messages/tags'
+import type { CreateTagParams, GetTagsParams, Tag, UpdateTagParams } from './messages/tags'
 import { toBool } from './utils'
 
 /**
@@ -311,6 +320,55 @@ export class ApiClient {
     }
 
     throw new PlaceDeleteConflictError(id, new Error(`Unexpected delete response for place ${id}`))
+  }
+
+  async getTags(params?: GetTagsParams): Promise<Tag[]> {
+    const result = await this.soapClient.getTagList(getTagsParamsToSoap(params))
+    return tagListFromSoap(result)
+  }
+
+  async getTagById(id: number): Promise<Tag | null> {
+    const tags = await this.getTags({ tagIds: [id] })
+    return tags[0] || null
+  }
+
+  async createTag(params: CreateTagParams): Promise<number> {
+    const createParams = createTagParamsToSoap(params)
+    const { setTagListReturn: result } = await this.soapClient.setTagList([createParams])
+    const inserted = result.find(item => item.client_id === String(createParams.client_id) && item.status === 'inserted')
+
+    if (inserted) {
+      return +inserted.server_id
+    }
+
+    throw new Error(`Unexpected response during create tag: ${JSON.stringify(result)}`)
+  }
+
+  async updateTag(params: UpdateTagParams): Promise<void> {
+    const { setTagListReturn: result } = await this.soapClient.setTagList([updateTagParamsToSoap(params)])
+    const updated = result.find(item => +item.server_id === params.id && item.status === 'updated')
+
+    if (updated) {
+      return
+    }
+
+    throw new Error(`Unexpected response during update tag: ${JSON.stringify(result)}`)
+  }
+
+  async deleteTag(id: number): Promise<void> {
+    try {
+      const result = await this.soapClient.deleteObject({ id, type: 'tag' })
+      if (+result.deleteObjectReturn === 1) {
+        return
+      }
+    } catch (error) {
+      if (isTagDeleteConflict(error)) {
+        throw new TagDeleteConflictError(id, error)
+      }
+      throw error
+    }
+
+    throw new TagDeleteConflictError(id, new Error(`Unexpected delete response for tag ${id}`))
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResult> {

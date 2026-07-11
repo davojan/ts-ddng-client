@@ -27,6 +27,12 @@ import type {
 } from './messages/getPlaceList'
 import type { GetRecordListSoapParams, GetRecordListSoapResult } from './messages/getRecordList'
 import type { SetRecordListSoapList, SetRecordListSoapResult } from './messages/setRecordList'
+import type {
+  GetTagListSoapParams,
+  GetTagListSoapResult,
+  SetTagListSoapList,
+  SetTagListSoapResult,
+} from './messages/tags'
 import { listToSoap, mapListToSoap, mapToSoap } from './paramsToSoap'
 import type { AsyncDdngClient, AuthArgs } from './soapTypes'
 import { xml2json } from './xml2json'
@@ -96,6 +102,16 @@ export class SoapClient {
     }
   }
 
+  async getTagList(params?: GetTagListSoapParams): Promise<GetTagListSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.getTagListAsync({ ...this.authArgs, idList: listToSoap(params?.idList) }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
   async getRecordList(params?: GetRecordListSoapParams, idList?: number[]): Promise<GetRecordListSoapResult> {
     const client = await this.client
 
@@ -133,6 +149,16 @@ export class SoapClient {
 
     try {
       return xml2json(await client.setSourceListAsync({ ...this.authArgs, list: mapListToSoap(list) }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
+  async setTagList(list?: SetTagListSoapList): Promise<SetTagListSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.setTagListAsync({ ...this.authArgs, list: mapListToSoap(list) }))
     } catch (error) {
       reportLastRequest(client, error)
     }
@@ -190,6 +216,7 @@ function createSoapClient(): Promise<AsyncDdngClient> {
         getPlaceListAsync: args => callSoapMethod<GetPlaceListSoapResult>(rawClient, 'getPlaceList', args),
         getRecordListAsync: args => callSoapMethod<GetRecordListSoapResult>(rawClient, 'getRecordList', args),
         getSourceListAsync: args => callSoapMethod<GetSourceListSoapResult>(rawClient, 'getSourceList', args),
+        getTagListAsync: args => callSoapMethod<GetTagListSoapResult>(rawClient, 'getTagList', args),
         get lastRequest() {
           return rawClient.lastRequest
         },
@@ -198,6 +225,7 @@ function createSoapClient(): Promise<AsyncDdngClient> {
         setPlaceListAsync: args => callSoapMethod<SetPlaceListSoapResult>(rawClient, 'setPlaceList', args),
         setRecordListAsync: args => callSoapMethod<SetRecordListSoapResult>(rawClient, 'setRecordList', args),
         setSourceListAsync: args => callSoapMethod<SetSourceListSoapResult>(rawClient, 'setSourceList', args),
+        setTagListAsync: args => callSoapMethod<SetTagListSoapResult>(rawClient, 'setTagList', args),
       })
     })
   })
@@ -240,11 +268,13 @@ type SoapMethodName =
   | 'getPlaceList'
   | 'getRecordList'
   | 'getSourceList'
+  | 'getTagList'
   | 'setCategoryList'
   | 'setCurrencyList'
   | 'setPlaceList'
   | 'setRecordList'
   | 'setSourceList'
+  | 'setTagList'
 
 interface SoapMethodClient extends AsyncDdngClient {
   deleteObject(args: unknown, callback: SoapMethodCallback<DeleteObjectSoapResult>): void

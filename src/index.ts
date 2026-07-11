@@ -18,6 +18,8 @@ export { CurrencyDeleteConflictError, CurrencyValidationError } from './messages
 export type { CreateCurrencyParams, Currency, GetCurrenciesParams, UpdateCurrencyParams } from './messages/currencies'
 export { PlaceDeleteConflictError, PlaceValidationError } from './messages/getPlaceList'
 export type { CreatePlaceParams, GetPlacesParams, Place, UpdatePlaceParams } from './messages/getPlaceList'
+export { TagDeleteConflictError, TagValidationError } from './messages/tags'
+export type { CreateTagParams, GetTagsParams, Tag, UpdateTagParams } from './messages/tags'
 export { FilterType, PeriodType, RecordType, RecordTypeAll } from './messages/getRecordList'
 export {
   FinanceOperationDeleteError,
