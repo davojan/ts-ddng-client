@@ -15,6 +15,7 @@ import type {
   IncomeOperation,
   MoveOperation,
   ExchangeOperation,
+  UpdateFinanceOperation,
 } from './FinanceOperation'
 import {
   ExpenseCategoryDeleteConflictError,
@@ -71,12 +72,7 @@ import {
   getRecordListParamsToSoap,
   recordListFromSoap,
 } from './messages/getRecordList'
-import type {
-  ExpenseReportItem,
-  GetReportParams,
-  GetReportSoapResult,
-  IncomeReportItem,
-} from './messages/getReport'
+import type { ExpenseReportItem, GetReportParams, GetReportSoapResult, IncomeReportItem } from './messages/getReport'
 import {
   expenseReportFromSoap,
   getExpenseReportParamsToSoap,
@@ -347,7 +343,9 @@ export class ApiClient {
   async createTag(params: CreateTagParams): Promise<number> {
     const createParams = createTagParamsToSoap(params)
     const { setTagListReturn: result } = await this.soapClient.setTagList([createParams])
-    const inserted = result.find(item => item.client_id === String(createParams.client_id) && item.status === 'inserted')
+    const inserted = result.find(
+      item => item.client_id === String(createParams.client_id) && item.status === 'inserted',
+    )
 
     if (inserted) {
       return +inserted.server_id
@@ -664,6 +662,29 @@ export class ApiClient {
     }
 
     return serverIds
+  }
+
+  /**
+   * Updates several income/expense operations in a single request (each is one record).
+   * Move/exchange operations are two linked records and are not supported here.
+   */
+  async updateOperations(operations: UpdateFinanceOperation[]): Promise<void> {
+    const records: SetRecordListSoapList = operations.map(operation => {
+      switch (operation.operationType) {
+        case RecordType.Income:
+          return updateIncomeParamsToSoap(operation)
+        case RecordType.Expense:
+          return updateExpenseParamsToSoap(operation)
+        default:
+          throw new Error(`updateOperations supports income/expense only, got type ${operation.operationType}`)
+      }
+    })
+
+    const { setRecordListReturn: result } = await this.soapClient.setRecordList(records)
+
+    if (result.length !== records.length || !result.every(item => item.status === 'updated')) {
+      throw new Error(`Unexpected response during updating operations: ${JSON.stringify(result)}`)
+    }
   }
 
   private async getOperationRecordById(id: number): Promise<GetRecordListResult[number] | null> {
