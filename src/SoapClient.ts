@@ -38,7 +38,7 @@ import type { AsyncDdngClient, AuthArgs } from './soapTypes'
 import { xml2json } from './xml2json'
 
 const { soap } = require('strong-soap')
-const WSDL_URL = 'https://www.drebedengi.ru/soap/dd.wsdl'
+const WSDL_URL = 'https://www.drebedengi.ru/soap/dd.ssl.wsdl'
 
 /**
  * Low-level SOAP-client for drebedengi.ru service
