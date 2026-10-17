@@ -45,13 +45,12 @@ function xmlArray2json(value: any[]): any[] {
   return Array.isArray(value) ? value.map(xml2json) : [xml2json(value)]
 }
 
-function xmlMap2json(value: any[]): Dictionary<any> {
+// strong-soap yields a single <item> as an object rather than a one-element array
+function xmlMap2json(value: unknown): Dictionary<any> {
   const result: Dictionary<any> = {}
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const key = item.key.$value
-      result[key] = xml2json(item.value)
-    }
+  for (const item of (value == null ? [] : Array.isArray(value) ? value : [value])) {
+    const key = item.key.$value
+    result[key] = xml2json(item.value)
   }
   return result
 }

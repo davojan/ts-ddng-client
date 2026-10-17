@@ -20,3 +20,21 @@ test('xml2json resolves nested map values recursively', () => {
     }),
   ).toEqual({ enabled: true })
 })
+
+test('xml2json keeps a map with a single item', () => {
+  expect(
+    xml2json({
+      $attributes: { $xsiType: { type: 'Map' } },
+      item: {
+        key: { $value: 259923043 },
+        value: {
+          $attributes: { $xsiType: { type: 'Map' } },
+          item: {
+            key: { $value: 'id' },
+            value: { $attributes: { $xsiType: { type: 'string' } }, $value: '259923043' },
+          },
+        },
+      },
+    }),
+  ).toEqual({ 259923043: { id: '259923043' } })
+})
