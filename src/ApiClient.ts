@@ -71,6 +71,7 @@ import {
   FilterType,
   PeriodType,
   RecordType,
+  RecordTypeAll,
   getRecordListParamsToSoap,
   recordListFromSoap,
 } from './messages/getRecordList'
@@ -424,6 +425,16 @@ export class ApiClient {
   async getRecordList(params: GetRecordListParams): Promise<GetRecordListResult> {
     const result = await this.soapClient.getRecordList(getRecordListParamsToSoap(params))
     return recordListFromSoap(result)
+  }
+
+  /** Records by id, whatever their date or type; ids of deleted records are simply absent. Meant for sync. */
+  async getRecordsByIds(ids: number[]): Promise<GetRecordListResult> {
+    if (ids.length === 0) {
+      return []
+    }
+
+    const params = getRecordListParamsToSoap({ periodType: PeriodType.AllTime, recordType: RecordTypeAll })
+    return recordListFromSoap(await this.soapClient.getRecordList(params, ids))
   }
 
   async getIncomeReport(params: GetReportParams = {}): Promise<IncomeReportItem[]> {

@@ -21,6 +21,7 @@ export type { CreatePlaceParams, GetPlacesParams, Place, UpdatePlaceParams } fro
 export { TagDeleteConflictError, TagValidationError } from './messages/tags'
 export type { CreateTagParams, GetTagsParams, Tag, UpdateTagParams } from './messages/tags'
 export { FilterType, PeriodType, RecordType, RecordTypeAll } from './messages/getRecordList'
+export type { GetRecordListParams, GetRecordListResultItem } from './messages/getRecordList'
 export { ChangeAction, ChangeObjectType } from './messages/changes'
 export type { Change } from './messages/changes'
 export { AveragingType } from './messages/getRecordList'
