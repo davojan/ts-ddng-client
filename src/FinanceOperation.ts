@@ -93,7 +93,8 @@ export interface MoveOperation extends BaseOperation, MoveSpecificFields {
   operationType: RecordType.Move
 }
 
-export type UpdateMoveOperation = MoveOperation
+/** `linkedRecordId` (the source leg) lets updateOperations batch moves without looking the pair up. */
+export type UpdateMoveOperation = MoveOperation & { linkedRecordId?: number }
 
 export interface ExchangeSpecificFields {
   fromCurrencyId: number

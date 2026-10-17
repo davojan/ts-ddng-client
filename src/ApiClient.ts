@@ -692,14 +692,19 @@ export class ApiClient {
    * Move/exchange operations are two linked records and are not supported here.
    */
   async updateOperations(operations: UpdateFinanceOperation[]): Promise<void> {
-    const records: SetRecordListSoapList = operations.map(operation => {
+    const records: SetRecordListSoapList = operations.flatMap(operation => {
       switch (operation.operationType) {
         case RecordType.Income:
-          return updateIncomeParamsToSoap(operation)
+          return [updateIncomeParamsToSoap(operation)]
         case RecordType.Expense:
-          return updateExpenseParamsToSoap(operation)
+          return [updateExpenseParamsToSoap(operation)]
+        case RecordType.Move:
+          if (operation.linkedRecordId == null) {
+            throw new Error(`updateOperations needs linkedRecordId (the source leg) to update move ${operation.id}`)
+          }
+          return updateMoveParamsToSoap({ ...operation, linkedRecordId: operation.linkedRecordId })
         default:
-          throw new Error(`updateOperations supports income/expense only, got type ${operation.operationType}`)
+          throw new Error(`updateOperations supports income/expense/move only, got type ${operation.operationType}`)
       }
     })
 
