@@ -1,3 +1,4 @@
+import type { GetChangeListSoapParams, GetChangeListSoapResult, GetCurrentRevisionSoapResult } from './messages/changes'
 import type { GetBalanceSoapParams, GetBalanceSoapResult } from './messages/getBalance'
 import type {
   DeleteObjectSoapParams,
@@ -77,6 +78,26 @@ export class SoapClient {
 
     try {
       return xml2json(await client.getCategoryListAsync({ ...this.authArgs, idList: listToSoap(params?.idList) }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
+  async getChangeList(params: GetChangeListSoapParams): Promise<GetChangeListSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.getChangeListAsync({ ...this.authArgs, ...params }))
+    } catch (error) {
+      reportLastRequest(client, error)
+    }
+  }
+
+  async getCurrentRevision(): Promise<GetCurrentRevisionSoapResult> {
+    const client = await this.client
+
+    try {
+      return xml2json(await client.getCurrentRevisionAsync({ ...this.authArgs }))
     } catch (error) {
       reportLastRequest(client, error)
     }
@@ -215,6 +236,9 @@ function createSoapClient(): Promise<AsyncDdngClient> {
         deleteObjectAsync: args => callSoapMethod<DeleteObjectSoapResult>(rawClient, 'deleteObject', args),
         getBalanceAsync: args => callSoapMethod<GetBalanceSoapResult>(rawClient, 'getBalance', args),
         getCategoryListAsync: args => callSoapMethod<GetCategoryListSoapResult>(rawClient, 'getCategoryList', args),
+        getChangeListAsync: args => callSoapMethod<GetChangeListSoapResult>(rawClient, 'getChangeList', args),
+        getCurrentRevisionAsync: args =>
+          callSoapMethod<GetCurrentRevisionSoapResult>(rawClient, 'getCurrentRevision', args),
         getCurrencyListAsync: args => callSoapMethod<GetCurrencyListSoapResult>(rawClient, 'getCurrencyList', args),
         getPlaceListAsync: args => callSoapMethod<GetPlaceListSoapResult>(rawClient, 'getPlaceList', args),
         getRecordListAsync: args => callSoapMethod<GetRecordListSoapResult>(rawClient, 'getRecordList', args),
@@ -267,7 +291,9 @@ type SoapMethodName =
   | 'deleteObject'
   | 'getBalance'
   | 'getCategoryList'
+  | 'getChangeList'
   | 'getCurrencyList'
+  | 'getCurrentRevision'
   | 'getPlaceList'
   | 'getRecordList'
   | 'getSourceList'
@@ -283,7 +309,9 @@ interface SoapMethodClient extends AsyncDdngClient {
   deleteObject(args: unknown, callback: SoapMethodCallback<DeleteObjectSoapResult>): void
   getBalance(args: unknown, callback: SoapMethodCallback<GetBalanceSoapResult>): void
   getCategoryList(args: unknown, callback: SoapMethodCallback<GetCategoryListSoapResult>): void
+  getChangeList(args: unknown, callback: SoapMethodCallback<GetChangeListSoapResult>): void
   getCurrencyList(args: unknown, callback: SoapMethodCallback<GetCurrencyListSoapResult>): void
+  getCurrentRevision(args: unknown, callback: SoapMethodCallback<GetCurrentRevisionSoapResult>): void
   getPlaceList(args: unknown, callback: SoapMethodCallback<GetPlaceListSoapResult>): void
   getRecordList(args: unknown, callback: SoapMethodCallback<GetRecordListSoapResult>): void
   getSourceList(args: unknown, callback: SoapMethodCallback<GetSourceListSoapResult>): void

@@ -31,6 +31,8 @@ import type {
   GetExpenseCategoriesParams,
   UpdateExpenseCategoryParams,
 } from './messages/expenseCategories'
+import { changeListFromSoap, currentRevisionFromSoap } from './messages/changes'
+import type { Change } from './messages/changes'
 import type { GetBalanceParams, GetBalanceResult } from './messages/getBalance'
 import {
   IncomeSourceDeleteConflictError,
@@ -379,6 +381,16 @@ export class ApiClient {
     }
 
     throw new TagDeleteConflictError(id, new Error(`Unexpected delete response for tag ${id}`))
+  }
+
+  /** Current server revision; save it after a successful sync and pass it to getChanges next time. */
+  async getCurrentRevision(): Promise<number> {
+    return currentRevisionFromSoap(await this.soapClient.getCurrentRevision())
+  }
+
+  /** The account's changes after the given revision, oldest first. */
+  async getChanges(sinceRevision: number): Promise<Change[]> {
+    return changeListFromSoap(await this.soapClient.getChangeList({ revision: String(sinceRevision) }))
   }
 
   async getBalance(params: GetBalanceParams): Promise<GetBalanceResult> {

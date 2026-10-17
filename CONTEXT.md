@@ -175,3 +175,11 @@ Finance operation create APIs return one high-level operation identifier. For si
 Income and expense reports expose flat grouped rows with parent identifiers rather than building trees. Income rows identify sources and expense rows identify categories. Amounts are positive in the high-level interface even though Drebedengi returns negative expense differences.
 
 Report methods reuse record-list filters, force the matching operation and grouping types internally, and optionally expose Drebedengi averaging. Without a display currency, Drebedengi may return multiple rows for the same source or category, one per original currency. Parent and child aggregate rows can coexist and must not be summed together as independent totals.
+
+### Revision
+
+A server-wide, monotonically increasing change counter. Clients save the current revision after a successful sync and later ask for the changes after it. Because the counter is shared by all accounts, consecutive revisions of one account are far apart.
+
+### Change
+
+One entry of an account's change list since a revision: the revision, the action (add, update, delete), the object type (record, income source, expense category, place, currency, tag, accumulation, accumulation order) and the object id for a follow-up fetch. Currency rate auto-updates appear daily as currency updates.

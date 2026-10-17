@@ -1,3 +1,4 @@
+import type { GetChangeListSoapParams, GetChangeListSoapResult, GetCurrentRevisionSoapResult } from './messages/changes'
 import type { GetBalanceSoapParams, GetBalanceSoapResult } from './messages/getBalance'
 import type {
   DeleteObjectSoapParams,
@@ -39,6 +40,8 @@ export interface AsyncDdngClient {
   deleteObjectAsync: (args: AuthArgs & DeleteObjectSoapParams) => Promise<DeleteObjectSoapResult>
   getBalanceAsync: (args: AuthArgs & { params?: GetBalanceSoapParams }) => Promise<GetBalanceSoapResult>
   getCategoryListAsync: (args: AuthArgs & GetCategoryListSoapParams) => Promise<GetCategoryListSoapResult>
+  getChangeListAsync: (args: AuthArgs & GetChangeListSoapParams) => Promise<GetChangeListSoapResult>
+  getCurrentRevisionAsync: (args: AuthArgs) => Promise<GetCurrentRevisionSoapResult>
   getCurrencyListAsync: (args: AuthArgs & GetCurrencyListSoapParams) => Promise<GetCurrencyListSoapResult>
   getPlaceListAsync: (args: AuthArgs & GetPlaceListSoapParams) => Promise<GetPlaceListSoapResult>
   getRecordListAsync: (
