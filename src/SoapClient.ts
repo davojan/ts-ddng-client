@@ -283,8 +283,13 @@ function callSoapMethod<TResult>(
 }
 
 function reportLastRequest(client: AsyncDdngClient, error: unknown): never {
-  console.error(`Error during SOAP request ${client.lastRequest ?? '<unknown request>'}`)
+  console.error(`Error during SOAP request ${redactCredentials(client.lastRequest ?? '<unknown request>')}`)
   throw error
+}
+
+/** Masks the auth arguments every request carries, so error logs never contain credentials. */
+export function redactCredentials(request: string): string {
+  return request.replace(/<(apiId|login|pass)(\s[^>]*)?>[^<]*<\/\1>/g, '<$1$2>***</$1>')
 }
 
 type SoapMethodName =
